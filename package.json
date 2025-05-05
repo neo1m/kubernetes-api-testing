@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "jest": "^29.7.0",
+    "node-fetch": "^2.7.0",
+    "node-forge": "^1.3.1"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:csr:server": "jest --testPathPattern=tests/csr/server",
+    "test:csr:client": "jest --testPathPattern=tests/csr/client"
+  },
+  "imports": {
+    "#fixtures/": "./fixtures/",
+    "#helpers/": "./helpers/",
+    "#tests/": "./tests/"
+  }
+}
