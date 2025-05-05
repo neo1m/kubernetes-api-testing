@@ -1,9 +1,9 @@
 const { createNode, getNode, deleteNode } = require('#helpers/nodeHelpers.js')
 const { waitForNodeReadiness } = require('#helpers/waitForNodeReadiness.js')
 const { nodeManifest } = require('#helpers/nodeTemplates.js')
-const { nodeData } = require('#fixtures/testData.js')
+const { nodeTests } = require('#fixtures/testData.js')
 
-const { nodeName } = nodeData
+const { nodeName } = nodeTests.nodeData
 const WAIT_TIMEOUT = 60000
 
 describe('base operations with Node', () => {
