@@ -5,6 +5,7 @@ const { serverCSR } = require('#helpers/csrTemplates.js')
 const { serverCSRName, nodeData } = require('#fixtures/testData.js')
 
 const { nodeName, externalIP, internalIP } = nodeData
+const WAIT_TIMEOUT = 60000
 
 describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
   describe('when required spec group "system:authenticated" is missing', () => {
@@ -33,7 +34,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', 60000)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -71,7 +72,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', 60000)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -107,7 +108,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', 60000)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -146,7 +147,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', 60000)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -188,7 +189,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', 60000)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
