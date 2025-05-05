@@ -5,7 +5,7 @@
 - `tests` - тестовые сценарии
 - `jest.config.js` - конфигурация тестового фреймворка jest
 
-# Подготовка к тестированию 
+# Подготовка к тестированию
 
 - проверить наличие NodeJS (например, последняя LTS версия)
 - установить npm модули через `npm i` 
@@ -17,6 +17,6 @@
 - запустить все тесты
   - npm run test
 - запустить конкретный тест (указываем относительный путь к файлу с тестами)
-  - npm run test --testPathPattern=csr/server/denied-csr-invalid-subject-o.test.js
+  - npm run test --testPathPattern=csr/client/approved-csr.test.js
 - запустить определенную группу тестов (можно посмотреть блок `scripts` в `package.json`)
   - npm run test:csr:server 
