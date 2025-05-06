@@ -2,9 +2,10 @@ const { createCSR, deleteCSR } = require('#helpers/csrHelpers.js')
 const { waitForCSRStatus } = require('#helpers/waitForCSRApproval.js')
 const { generateCSR } = require('#helpers/generateCSR.js')
 const { clientCSR } = require('#helpers/csrTemplates.js')
-const { clientCSRName, nodeData } = require('#fixtures/testData.js')
+const { csrTests } = require('#fixtures/testData.js')
 
-const { nodeName, externalIP, internalIP } = nodeData
+const { nodeName, externalIP, internalIP } = csrTests.nodeData
+const { clientCSRName } = csrTests
 const WAIT_TIMEOUT = 60000
 
 describe('CSR denied - Subject Alternative Names should not exist for client node', () => {
