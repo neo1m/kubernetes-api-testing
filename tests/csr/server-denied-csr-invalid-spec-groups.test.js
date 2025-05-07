@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
 
-describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
-  describe('when required spec group "system:authenticated" is missing', () => {
+describe('[CSR denied]', () => {
+  describe('[when required spec.groups "system:authenticated" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -46,7 +46,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec group "system:nodes" is missing', () => {
+  describe('[when required spec.groups "system:nodes" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -84,7 +84,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec groups is empty', () => {
+  describe('[when required spec.groups is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -120,7 +120,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec groups have typo in values', () => {
+  describe('[when required spec.groups have typo in values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -159,7 +159,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec groups have extra values', () => {
+  describe('[when required spec.groups have extra values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

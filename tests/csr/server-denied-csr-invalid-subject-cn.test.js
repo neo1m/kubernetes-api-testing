@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
 
-describe('CSR denied: invalid Subject Common Name', () => {
-  describe('when common name in CSR is empty', () => {
+describe('[CSR denied]', () => {
+  describe('[when Subject Common Name in CSR is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -43,7 +43,7 @@ describe('CSR denied: invalid Subject Common Name', () => {
     })
   })
 
-  describe('when common name in CSR is missing', () => {
+  describe('[when Subject Common Name in CSR is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -77,7 +77,7 @@ describe('CSR denied: invalid Subject Common Name', () => {
     })
   })
 
-  describe('when common name in CSR contains random characters', () => {
+  describe('[when Subject Common Name in CSR contains random characters]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -112,7 +112,7 @@ describe('CSR denied: invalid Subject Common Name', () => {
     })
   })
 
-  describe('when common name in API request is empty', () => {
+  describe('[when spec.username in API request is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -147,7 +147,7 @@ describe('CSR denied: invalid Subject Common Name', () => {
     })
   })
 
-  describe('when common name in API request is missing', () => {
+  describe('[when spec.username in API request is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -182,7 +182,7 @@ describe('CSR denied: invalid Subject Common Name', () => {
     })
   })
 
-  describe('when common name in API request contains random characters', () => {
+  describe('[when spec.username in API request contains random characters]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
 
-describe('CSR denied - SAN may contain only IP or DNS', () => {
-  describe('when SAN consists only of internal ip', () => {
+describe('[CSR denied]', () => {
+  describe('[when SAN consists only of internal IP]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -42,7 +42,7 @@ describe('CSR denied - SAN may contain only IP or DNS', () => {
     })
   })
 
-  describe('when SAN consists only of external ip', () => {
+  describe('[when SAN consists only of external IP]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -76,7 +76,7 @@ describe('CSR denied - SAN may contain only IP or DNS', () => {
     })
   })
 
-  describe('when SAN is empty', () => {
+  describe('[when SAN is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
