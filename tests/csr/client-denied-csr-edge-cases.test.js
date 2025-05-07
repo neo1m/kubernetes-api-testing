@@ -6,8 +6,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR denied - edge cases with invalid structure or malformed requests', () => {
-  describe('when CSR base64 structure is empty', () => {
+describe('CSR denied', () => {
+  describe('when spec.request (CSR base64) in API request is empty', () => {
     test('should not create CSR', async () => {
       const newCSR = JSON.parse(JSON.stringify(clientCSR))
       newCSR.metadata.name = clientCSRName
@@ -26,7 +26,7 @@ describe('CSR denied - edge cases with invalid structure or malformed requests',
     })
   })
 
-  describe('when CSR base64 structure is incorrect', () => {
+  describe('when spec.request (CSR base64) in API request is incorrect', () => {
     test('should not create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
