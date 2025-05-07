@@ -7,4 +7,7 @@ module.exports = {
 
   // Количество потоков выполнения тестов
   maxWorkers: 1,
+
+  // Вспомогательный код для тестов
+  setupFilesAfterEnv: ['./jest.setup.js'],
 }
