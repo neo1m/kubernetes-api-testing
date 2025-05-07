@@ -7,8 +7,6 @@
   "scripts": {
     "test": "jest",
     "test:csr": "jest --testPathPattern=tests/csr/",
-    "test:csr:server": "jest --testPathPattern=tests/csr/server",
-    "test:csr:client": "jest --testPathPattern=tests/csr/client",
     "test:node": "jest --testPathPattern=tests/node/"
   },
   "imports": {
