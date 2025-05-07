@@ -17,6 +17,6 @@
 - запустить все тесты
   - npm run test
 - запустить конкретный тест (указываем относительный путь к файлу с тестами)
-  - npm run test --testPathPattern=csr/client/approved-csr.test.js
+  - npm run test -- --testPathPattern=csr/client/approved-csr.test.js
 - запустить определенную группу тестов (можно посмотреть блок `scripts` в `package.json`)
-  - npm run test:csr:server 
+  - npm run test:csr
