@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR approved', () => {
-  describe('when CSR data and API request are valid', () => {
+describe('[CSR approved]', () => {
+  describe('[when CSR data and API request are valid]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

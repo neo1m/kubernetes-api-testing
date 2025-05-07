@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR denied - invalid Subject Organization', () => {
-  describe('when organization is system:master', () => {
+describe('[CSR denied]', () => {
+  describe('[when Subject Organization is system:master]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:master',
@@ -39,7 +39,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
   })
 
-  describe('when organization has a typo', () => {
+  describe('[when Subject Organization has a typo]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodez',
@@ -70,7 +70,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
   })
 
-  describe('when organization is empty', () => {
+  describe('[when Subject Organization is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: '',
@@ -101,7 +101,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
   })
 
-  describe('when organization is missing', () => {
+  describe('[when Subject Organization is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         commonName: `system:node:${nodeName}`,
@@ -131,7 +131,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
   })
 
-  describe('when organization contains random characters', () => {
+  describe('[when Subject Organization contains random characters]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'qwerty123',

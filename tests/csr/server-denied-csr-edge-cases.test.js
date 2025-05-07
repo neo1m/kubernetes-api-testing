@@ -6,8 +6,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
 
-describe('CSR denied', () => {
-  describe('when spec.request (CSR base64) in API request is empty', () => {
+describe('[CSR denied]', () => {
+  describe('[when spec.request (CSR base64) in API request is empty]', () => {
     test('should not create CSR', async () => {
       const newCSR = JSON.parse(JSON.stringify(serverCSR))
       newCSR.metadata.name = serverCSRName
@@ -28,7 +28,7 @@ describe('CSR denied', () => {
     })
   })
 
-  describe('when spec.request (CSR base64) in API request is incorrect', () => {
+  describe('[when spec.request (CSR base64) in API request is incorrect]', () => {
     test('should not create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

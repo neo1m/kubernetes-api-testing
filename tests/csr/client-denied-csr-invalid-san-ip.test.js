@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR denied - Subject Alternative Names should not exist for client node', () => {
-  describe('when SAN consists of ip values', () => {
+describe('[CSR denied]', () => {
+  describe('[when SAN consists of IP values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -43,7 +43,7 @@ describe('CSR denied - Subject Alternative Names should not exist for client nod
     })
   })
 
-  describe('when SAN consists of dns values', () => {
+  describe('[when SAN consists of DNS values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -77,7 +77,7 @@ describe('CSR denied - Subject Alternative Names should not exist for client nod
     })
   })
 
-  describe('when SAN consists of ip and dns values', () => {
+  describe('[when SAN consists of IP and DNS values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

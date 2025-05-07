@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR denied - invalid CertificateSigningRequest.spec.usages', () => {
-  describe('when required spec usage "client auth" is missing', () => {
+describe('[CSR denied]', () => {
+  describe('[when required spec.usages "client auth" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -42,7 +42,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.usages', () => {
     })
   })
 
-  describe('when required spec usage "digital signature" is missing', () => {
+  describe('[when required spec.usages "digital signature" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -76,7 +76,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.usages', () => {
     })
   })
 
-  describe('when spec usages have extra values', () => {
+  describe('[when spec.usages have extra values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -114,7 +114,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.usages', () => {
     })
   })
 
-  describe('when spec usages is empty', () => {
+  describe('[when spec.usages is empty]', () => {
     test('should not create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -141,7 +141,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.usages', () => {
     })
   })
 
-  describe('when spec usages have typo in values', () => {
+  describe('[when spec.usages have typo in values]', () => {
     test('should not create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',

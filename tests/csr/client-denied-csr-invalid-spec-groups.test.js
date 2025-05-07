@@ -7,8 +7,8 @@ const { csrTests } = require('#fixtures/testData.js')
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
 
-describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
-  describe('when required spec group "system:authenticated" is missing', () => {
+describe('[CSR denied]', () => {
+  describe('[when required spec.groups "system:authenticated" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -43,7 +43,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec group "system:bootstrappers" is missing', () => {
+  describe('[when required spec.groups "system:bootstrappers" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -78,7 +78,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when required spec group "system:bootstrappers:kubeadm:default-node-token" is missing', () => {
+  describe('[when required spec.groups "system:bootstrappers:kubeadm:default-node-token" is missing]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -113,7 +113,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when spec groups is empty', () => {
+  describe('[when spec.groups is empty]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -145,7 +145,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when spec groups have typo in values', () => {
+  describe('[when spec.groups have typo in values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
@@ -181,7 +181,7 @@ describe('CSR denied - invalid CertificateSigningRequest.spec.groups', () => {
     })
   })
 
-  describe('when spec groups have extra values', () => {
+  describe('[when spec.groups have extra values]', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
