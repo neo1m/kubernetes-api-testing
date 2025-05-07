@@ -6,7 +6,6 @@ const { csrTests } = require('#fixtures/testData.js')
 
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
-const WAIT_TIMEOUT = 60000
 
 describe('CSR denied - SAN may contain only IP or DNS', () => {
   describe('when SAN consists only of internal ip', () => {
@@ -31,7 +30,7 @@ describe('CSR denied - SAN may contain only IP or DNS', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -65,7 +64,7 @@ describe('CSR denied - SAN may contain only IP or DNS', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -96,7 +95,7 @@ describe('CSR denied - SAN may contain only IP or DNS', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(serverCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(serverCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')

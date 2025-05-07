@@ -6,7 +6,6 @@ const { csrTests } = require('#fixtures/testData.js')
 
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
-const WAIT_TIMEOUT = 60000
 
 describe('CSR denied - invalid Subject Organization', () => {
   describe('when organization is system:master', () => {
@@ -28,7 +27,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(clientCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -59,7 +58,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(clientCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -90,7 +89,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(clientCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -120,7 +119,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(clientCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')
@@ -151,7 +150,7 @@ describe('CSR denied - invalid Subject Organization', () => {
     })
 
     test('should deny CSR', async () => {
-      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied', WAIT_TIMEOUT)
+      const { status, body } = await waitForCSRStatus(clientCSRName, 'Denied')
       expect(status).toBe(200)
       expect(body.metadata.name).toBe(clientCSRName)
       expect(body.status.conditions[0].type).toBe('Denied')

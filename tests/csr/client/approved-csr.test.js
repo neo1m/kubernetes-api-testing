@@ -6,7 +6,6 @@ const { csrTests } = require('#fixtures/testData.js')
 
 const { nodeName } = csrTests.nodeData
 const { clientCSRName } = csrTests
-const WAIT_TIMEOUT = 60000
 
 describe('CSR approved - all data is valid', () => {
   test('should create CSR', async () => {
@@ -27,7 +26,7 @@ describe('CSR approved - all data is valid', () => {
   })
 
   test('should approve CSR', async () => {
-    const { status, body } = await waitForCSRStatus(clientCSRName, 'Approved', WAIT_TIMEOUT)
+    const { status, body } = await waitForCSRStatus(clientCSRName, 'Approved')
     expect(status).toBe(200)
     expect(body.metadata.name).toBe(clientCSRName)
     expect(body.status.conditions[0].type).toBe('Approved')

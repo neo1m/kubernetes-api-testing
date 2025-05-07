@@ -30,7 +30,7 @@ describe('CSR approved - all data is valid', () => {
   })
 
   test('should approve CSR', async () => {
-    const { status, body } = await waitForCSRStatus(serverCSRName, 'Approved', 60000)
+    const { status, body } = await waitForCSRStatus(serverCSRName, 'Approved')
     expect(status).toBe(200)
     expect(body.metadata.name).toBe(serverCSRName)
     expect(body.status.conditions[0].type).toBe('Approved')
