@@ -9,7 +9,7 @@ const { getNode } = require('#helpers/nodeHelpers.js')
  * @param {number} intervalMs - Интервал между запросами в миллисекундах.
  * @returns {Promise<{ status: number, body: object }>} - Информация о Node после успешного получения данных.
  */
-async function waitForNodeReadiness(nodeName, timeoutMs = 60000, intervalMs = 5000) {
+async function waitForNodeReadiness(nodeName, timeoutMs = 30000, intervalMs = 5000) {
     const deadline = Date.now() + timeoutMs
 
     while (Date.now() < deadline) {
