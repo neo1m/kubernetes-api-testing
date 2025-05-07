@@ -4,7 +4,7 @@ global.console = console
 beforeEach(() => {
   const currentTest = expect.getState().currentTestName
   console.log(`🟡 START: ${currentTest}`)
-  console.time(`⏱ ${currentTest}`)
+  console.time(`⏱ TIME: ${currentTest}`)
 })
 
 afterEach(() => {
