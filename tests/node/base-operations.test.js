@@ -21,6 +21,8 @@ describe('[base operations with Node]', () => {
       expect(status).toBe(200)
       expect(externalIP).toBeDefined()
       expect(internalIP).toBeDefined()
+      expect(externalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
+      expect(internalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
     })
 
     test('should contain correct labels', async () => {
