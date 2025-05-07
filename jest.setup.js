@@ -1,14 +1,16 @@
 const console = require("console")
 global.console = console
 
+let testStartTime = 0
+
 beforeEach(() => {
-  const currentTest = expect.getState().currentTestName
-  console.log(`🟡 START: ${currentTest}`)
-  console.time(`⏱ TIME: ${currentTest}`)
+  const name = expect.getState().currentTestName
+  console.log(`🟡 START: ${name}`)
+  testStartTime = Date.now()
 })
 
 afterEach(() => {
-  const currentTest = expect.getState().currentTestName
-  console.timeEnd(`⏱ TIME: ${currentTest}`)
-  console.log(`✅ DONE: ${currentTest}\n`)
+  const name = expect.getState().currentTestName
+  const duration = Date.now() - testStartTime
+  console.log(`✅ DONE: ${name} (${duration} ms)\n`)
 })
