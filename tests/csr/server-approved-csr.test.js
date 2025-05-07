@@ -8,7 +8,7 @@ const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests
 
 describe('CSR approved', () => {
-  describe('when data and request are valid', () => {
+  describe('when CSR data and API request are valid', () => {
     test('should create CSR', async () => {
       const csrData = {
         organizationName: 'system:nodes',
