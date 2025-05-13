@@ -71,6 +71,7 @@ describe('[CSR approved]', () => {
       signCertificate(clientCSRPath, clientCrtPath, caCrtPath, caKeyPath, extPath)
       expect(true).toBe(true)
     })
+
     test('should create CSR', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
@@ -121,6 +122,7 @@ describe('[CSR approved]', () => {
       console.log('\nbody:')
       console.log(body)
     })
+
     test('should get CSR list', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
@@ -143,8 +145,10 @@ describe('[CSR approved]', () => {
       console.log('\nbody:')
       console.log(body)
     })
+
     test('should delete CSR', async () => {
       // Настройка HTTPS агента с mTLS
+      // Для удаления CSR после тестов используем доступы от основного клиента minikube
       const httpsAgent = new https.Agent({
         cert: fs.readFileSync(minikubeCertPath),
         key: fs.readFileSync(minikubeKeyPath),
@@ -152,7 +156,7 @@ describe('[CSR approved]', () => {
         rejectUnauthorized: false,
       })
 
-      // Запрос
+      // Запрос на удаление
       const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
         method: 'DELETE',
         agent: httpsAgent,
@@ -164,6 +168,11 @@ describe('[CSR approved]', () => {
       console.log(res.status)
       console.log('\nbody:')
       console.log(body)
+
+      // Проверки
+      expect(res.status).toBe(200)
+      expect(body.status).toBe('Success')
+      expect(body.details.name).toBe(csrName)
     })
   })
 })
