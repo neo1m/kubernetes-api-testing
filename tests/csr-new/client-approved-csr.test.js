@@ -3,7 +3,13 @@ const path = require('path')
 const https = require('https')
 const fetch = require('node-fetch')
 
-const { createDirectoryIfNotExists, removeDirectory } = require('#helpers/common.js')
+// Вспомогательные методы
+const {
+  createDirectoryIfNotExists,
+  removeDirectory,
+} = require('#helpers/common.js')
+
+// Методы для работы с openssl
 const {
   generateKeys,
   generateCSR,
@@ -16,7 +22,7 @@ const {
 // Директория для временного хранения файлов
 const outputDir = path.resolve(__dirname, '..', '..', 'fixtures', 'tmp')
 
-// Временные файлы
+// Временные openssl файлы
 const privateKeyPath = path.join(outputDir, 'client.key')
 const publicKeyPath = path.join(outputDir, 'client.pub')
 const cnfPath = path.join(outputDir, 'csr_client.cnf')
@@ -29,8 +35,8 @@ const caCrtPath = path.join(process.env.HOME, '.minikube/ca.crt')
 const caKeyPath = path.join(process.env.HOME, '.minikube/ca.key')
 
 // Сертификат и ключ для minikube пользователя
-const minikubeCertPath = `${process.env.HOME}/.minikube/profiles/minikube/client.crt`
-const minikubeKeyPath = `${process.env.HOME}/.minikube/profiles/minikube/client.key`
+const minikubeCertPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.crt')
+const minikubeKeyPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.key')
 
 // Subject
 const subject = 'CN=system:node:csr-tests-kuber-node,O=system:nodes'
@@ -44,6 +50,7 @@ const kubePort = 8443
 const baseURL = `https://${kubeHost}:${kubePort}`
 const csrBasePath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 
+// Тестовые данные
 const csrName = 'test-client-csr'
 const nodeData = {
   nodeName: 'csr-tests-kuber-node',
@@ -52,24 +59,21 @@ const nodeData = {
 }
 
 beforeAll(() => {
-  console.log('\nbeforeAll\n')
   createDirectoryIfNotExists(outputDir)
 })
 
 afterAll(() => {
-  console.log('\nafterAll\n')
   removeDirectory(outputDir)
 })
 
 describe('[CSR approved]', () => {
   describe('[when CSR data and API request are valid]', () => {
-    test('should create Keys, CSR and Certificate', async () => {
+    test('should prepare openssl files', async () => {
       generateKeys(privateKeyPath, publicKeyPath)
       createCnfFile(cnfPath, subject, sanList)
       createExtFile(extPath, sanList)
       generateCSR(privateKeyPath, clientCSRPath, cnfPath)
       signCertificate(clientCSRPath, clientCrtPath, caCrtPath, caKeyPath, extPath)
-      expect(true).toBe(true)
     })
 
     test('should create CSR', async () => {
@@ -121,6 +125,10 @@ describe('[CSR approved]', () => {
       console.log(res.status)
       console.log('\nbody:')
       console.log(body)
+
+      // Проверки
+      expect(res.status).toBe(201)
+      expect(body.metadata.name).toBe(csrName)
     })
 
     test('should get CSR list', async () => {
