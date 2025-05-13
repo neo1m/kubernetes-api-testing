@@ -30,6 +30,16 @@ function generateCSR(privateKeyPath, csrPath, configPath) {
 }
 
 /**
+ * Кодирует CSR-файл в base64.
+ * @param {string} csrPath - Путь к .csr файлу.
+ * @returns {string} CSR в base64.
+ */
+function encodeCSRToBase64(csrPath) {
+    const csrBuffer = fs.readFileSync(csrPath)
+    return csrBuffer.toString('base64').replace(/\r?\n/g, '')
+}
+
+/**
  * Генерирует временный конфигурационный файл для CSR с SAN.
  * @param {string} configPath - Пример: "CN=example.com,O=MyOrg,C=US"
  * @param {string} subject - Пример: "CN=example.com,O=MyOrg,C=US"
@@ -98,6 +108,7 @@ function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
 module.exports = {
     generateKeys,
     generateCSR,
+    encodeCSRToBase64,
     createCnfFile,
     createExtFile,
     signCertificate,
