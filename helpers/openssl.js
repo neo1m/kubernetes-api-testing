@@ -14,7 +14,7 @@ function generateKeys(privateKeyPath, publicKeyPath) {
         -algorithm RSA \
         -out ${privateKeyPath} \
         -pkeyopt rsa_keygen_bits:2048
-    `)
+    `, { stdio: 'ignore' })
 
     // Извлечение публичного ключа из приватного
     execSync(`
@@ -22,7 +22,7 @@ function generateKeys(privateKeyPath, publicKeyPath) {
         -in ${privateKeyPath} \
         -pubout \
         -out ${publicKeyPath}
-    `)
+    `, { stdio: 'ignore' })
 }
 
 /**
@@ -39,7 +39,7 @@ function generateCSR(privateKeyPath, csrPath, configPath) {
         -key ${privateKeyPath} \
         -out ${csrPath} \
         -config "${configPath}"
-    `)
+    `, { stdio: 'ignore' })
 }
 
 /**
@@ -131,7 +131,7 @@ function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
         -days 365 \
         -sha256 \
         -extfile ${extPath}
-    `)
+    `, { stdio: 'ignore' })
 }
 
 module.exports = {
