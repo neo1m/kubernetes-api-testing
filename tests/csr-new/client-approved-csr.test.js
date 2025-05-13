@@ -41,13 +41,7 @@ const caKeyPath = path.join(process.env.HOME, '.minikube/ca.key')
 const minikubeCertPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.crt')
 const minikubeKeyPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.key')
 
-// Subject
-const subject = 'CN=system:node:csr-tests-kuber-node,O=system:nodes'
-
-// Subject Alternative Names
-const sanList = ['DNS:example.com', 'DNS:www.example.com']
-
-// Адрес кластера (нужно переопределить во время тестирования на свои значения)
+// Адрес кластера
 const kubeHost = require('child_process').execSync('minikube ip').toString().trim()
 const kubePort = 8443
 const baseURL = `https://${kubeHost}:${kubePort}`
@@ -56,6 +50,8 @@ const csrBasePath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 // Тестовые данные
 const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
+const subject = 'CN=system:node:csr-tests-kuber-node,O=system:nodes'
+const sanList = ['DNS:example.com', 'DNS:www.example.com']
 
 beforeAll(() => {
   createDirectoryIfNotExists(outputDir)
