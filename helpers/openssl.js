@@ -1,8 +1,14 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 
+/**
+ * Генерирует пару RSA-ключей: приватный и публичный.
+ *
+ * @param {string} privateKeyPath - Путь для сохранения приватного ключа.
+ * @param {string} publicKeyPath - Путь для сохранения публичного ключа.
+ */
 function generateKeys(privateKeyPath, publicKeyPath) {
-    // 1. Генерация приватного ключа
+    // Генерация приватного ключа
     execSync(`
         openssl genpkey \
         -algorithm RSA \
@@ -10,7 +16,7 @@ function generateKeys(privateKeyPath, publicKeyPath) {
         -pkeyopt rsa_keygen_bits:2048
     `)
 
-    // 2. Извлечение публичного ключа из приватного
+    // Извлечение публичного ключа из приватного
     execSync(`
         openssl rsa \
         -in ${privateKeyPath} \
@@ -19,6 +25,13 @@ function generateKeys(privateKeyPath, publicKeyPath) {
     `)
 }
 
+/**
+ * Генерирует CSR (запрос на сертификат) на основе приватного ключа и конфигурационного файла.
+ *
+ * @param {string} privateKeyPath - Путь к приватному ключу (например, './key.pem').
+ * @param {string} csrPath - Путь для сохранения CSR файла (например, './cert.csr').
+ * @param {string} configPath - Путь к конфигурационному файлу OpenSSL (например, './csr_config.cnf').
+ */
 function generateCSR(privateKeyPath, csrPath, configPath) {
     execSync(`
         openssl req \
@@ -81,6 +94,13 @@ function createCnfFile(configPath, subject, sanList = []) {
     fs.writeFileSync(configPath, configContent)
 }
 
+/**
+ * Создаёт временный конфигурационный файл расширений для подписания сертификата (X.509).
+ * Включает SAN (Subject Alternative Names) и базовые настройки.
+ *
+ * @param {string} extPath - Путь для сохранения расширенного конфигурационного файла (например, './ext.cnf').
+ * @param {string[]} sanList - Список SAN-значений, например: ['DNS:example.com', 'DNS:www.example.com'].
+ */
 function createExtFile(extPath, sanList) {
     const extContent = [
         'basicConstraints=CA:FALSE',
@@ -90,6 +110,15 @@ function createExtFile(extPath, sanList) {
     fs.writeFileSync(extPath, extContent)
 }
 
+/**
+ * Подписывает CSR-файл и создаёт SSL-сертификат с использованием CA-сертификата и CA-ключа.
+ *
+ * @param {string} csrPath - Путь к входному CSR файлу (например, './request.csr').
+ * @param {string} certPath - Путь для сохранения сгенерированного сертификата (например, './cert.crt').
+ * @param {string} caCertPath - Путь к CA-сертификату (например, './ca.crt').
+ * @param {string} caKeyPath - Путь к приватному ключу CA (например, './ca.key').
+ * @param {string} extPath - Путь к конфигурационному файлу расширений (например, './ext.cnf').
+ */
 function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
     execSync(`
         openssl x509 \
