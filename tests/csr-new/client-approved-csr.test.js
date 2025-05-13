@@ -3,6 +3,9 @@ const path = require('path')
 const https = require('https')
 const fetch = require('node-fetch')
 
+// Тестовые данные
+const { csrTests } = require('#fixtures/testData.js')
+
 // Вспомогательные методы
 const {
   createDirectoryIfNotExists,
@@ -51,12 +54,8 @@ const baseURL = `https://${kubeHost}:${kubePort}`
 const csrBasePath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 
 // Тестовые данные
-const csrName = 'test-client-csr'
-const nodeData = {
-  nodeName: 'csr-tests-kuber-node',
-  internalIP: '10.16.0.3',
-  externalIP: '31.128.38.32',
-}
+const csrName = csrTests.clientCSRName
+const nodeData = csrTests.nodeData
 
 beforeAll(() => {
   createDirectoryIfNotExists(outputDir)
@@ -131,7 +130,7 @@ describe('[CSR approved]', () => {
       expect(body.metadata.name).toBe(csrName)
     })
 
-    test('should get CSR list', async () => {
+    test('should approve CSR', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
         cert: fs.readFileSync(clientCrtPath),
@@ -141,7 +140,7 @@ describe('[CSR approved]', () => {
       })
 
       // Запрос
-      const res = await fetch(`${baseURL}${csrBasePath}`, {
+      const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
         method: 'GET',
         agent: httpsAgent,
       })
@@ -152,6 +151,11 @@ describe('[CSR approved]', () => {
       console.log(res.status)
       console.log('\nbody:')
       console.log(body)
+
+      // Результат
+      expect(res.status).toBe(200)
+      expect(body.metadata.name).toBe(csrName)
+      expect(body.status.conditions[0].type).toBe('Approved')
     })
 
     test('should delete CSR', async () => {
