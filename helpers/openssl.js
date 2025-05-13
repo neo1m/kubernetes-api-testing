@@ -1,7 +1,7 @@
 const { execSync } = require('child_process')
 const fs = require('fs')
 
-function generateKey(privateKeyPath, publicKeyPath) {
+function generateKeys(privateKeyPath, publicKeyPath) {
     // 1. Генерация приватного ключа
     execSync(`
         openssl genpkey \
@@ -96,7 +96,7 @@ function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
 }
 
 module.exports = {
-    generateKey,
+    generateKeys,
     generateCSR,
     createCnfFile,
     createExtFile,
