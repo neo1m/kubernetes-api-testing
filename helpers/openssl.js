@@ -19,15 +19,56 @@ function generateKey(privateKeyPath, publicKeyPath) {
     `)
 }
 
-function generateCSR(privateKeyPath, csrPath, subject) {
-    const subjString = '/' + subject.replace(/,/g, '/')
+function generateCSR(privateKeyPath, csrPath, configPath) {
     execSync(`
         openssl req \
         -new \
         -key ${privateKeyPath} \
         -out ${csrPath} \
-        -subj "${subjString}"
+        -config "${configPath}"
     `)
+}
+
+/**
+ * Генерирует временный конфигурационный файл для CSR с SAN.
+ * @param {string} configPath - Пример: "CN=example.com,O=MyOrg,C=US"
+ * @param {string} subject - Пример: "CN=example.com,O=MyOrg,C=US"
+ * @param {string[]} sanList - Пример: ["DNS:example.com", "DNS:www.example.com"]
+ * @returns {string} путь к созданному файлу
+ */
+function createCnfFile(configPath, subject, sanList = []) {
+    const dnSection = subject
+        .split(',')
+        .map(entry => {
+            const [key, value] = entry.split('=')
+            return `${key.trim()} = ${value.trim()}`
+        })
+        .join('\n')
+
+    const sanLine = sanList.length > 0
+        ? `subjectAltName = ${sanList.join(',')}`
+        : ''
+
+    const lines = [
+        '[ req ]',
+        'default_bits       = 2048',
+        'prompt             = no',
+        'default_md         = sha256',
+        'distinguished_name = dn',
+        'req_extensions     = req_ext',
+        '',
+        '[ dn ]',
+        dnSection,
+        '',
+        '[ req_ext ]',
+        sanLine
+    ]
+
+    const configContent = lines
+        .filter(line => line.trim() !== '')
+        .join('\n')
+
+    fs.writeFileSync(configPath, configContent)
 }
 
 function createExtFile(extPath, sanList) {
@@ -35,7 +76,7 @@ function createExtFile(extPath, sanList) {
         'basicConstraints=CA:FALSE',
         'keyUsage = digitalSignature, keyEncipherment',
         `subjectAltName = ${sanList.join(',')}`,
-    ].join('\n');
+    ].join('\n')
     fs.writeFileSync(extPath, extContent)
 }
 
@@ -57,6 +98,7 @@ function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
 module.exports = {
     generateKey,
     generateCSR,
+    createCnfFile,
     createExtFile,
     signCertificate,
 }
