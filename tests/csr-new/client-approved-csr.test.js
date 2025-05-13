@@ -135,23 +135,38 @@ describe('[CSR approved]', () => {
         rejectUnauthorized: false,
       })
 
-      // Запрос
-      const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
-        method: 'GET',
-        agent: httpsAgent,
-      })
-      const body = await res.json()
+      // Максимальное время ожидания
+      const maxRetryTime = 60000
+      const retryInterval = 5000
+      const startTime = Date.now()
+      let expectedStatus = 'Approved'
+      let lastStatus = ''
+      let body
 
-      // Результат
-      console.log('\nres.status:')
-      console.log(res.status)
-      console.log('\nbody:')
-      console.log(body)
+      // Цикл запросов
+      while (Date.now() - startTime < maxRetryTime) {
+        const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
+          method: 'GET',
+          agent: httpsAgent,
+        })
 
-      // Результат
-      expect(res.status).toBe(200)
-      expect(body.metadata.name).toBe(csrName)
-      expect(body.status.conditions[0].type).toBe('Approved')
+        body = await res.json()
+        lastStatus = body.status?.conditions?.[0]?.type || ''
+
+        if (res.status === 200 && lastStatus === expectedStatus) {
+          // Успешный случай
+          expect(res.status).toBe(200)
+          expect(body.metadata.name).toBe(csrName)
+          expect(body.status.conditions[0].type).toBe(expectedStatus)
+          return
+        }
+
+        // Ждём перед следующим запросом
+        await new Promise(resolve => setTimeout(resolve, retryInterval))
+      }
+
+      // Если дошли сюда - значит Approved не получен за отведённое время
+      throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
     })
 
     test('should delete CSR', async () => {
