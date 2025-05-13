@@ -19,15 +19,15 @@ function generateKey(privateKeyPath, publicKeyPath) {
     `)
 }
 
-function generateCSR(keyPath, csrPath, subject) {
+function generateCSR(privateKeyPath, csrPath, subject) {
     const subjString = '/' + subject.replace(/,/g, '/')
     execSync(`
-    openssl req \
-      -new \
-      -key ${keyPath} \
-      -out ${csrPath} \
-      -subj "${subjString}"
-  `)
+        openssl req \
+        -new \
+        -key ${privateKeyPath} \
+        -out ${csrPath} \
+        -subj "${subjString}"
+    `)
 }
 
 function createExtFile(extPath, sanList) {
@@ -41,22 +41,22 @@ function createExtFile(extPath, sanList) {
 
 function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
     execSync(`
-    openssl x509 \
-      -req \
-      -in ${csrPath} \
-      -CA ${caCertPath} \
-      -CAkey ${caKeyPath} \
-      -CAcreateserial \
-      -out ${certPath} \
-      -days 365 \
-      -sha256 \
-      -extfile ${extPath}
-  `)
+        openssl x509 \
+        -req \
+        -in ${csrPath} \
+        -CA ${caCertPath} \
+        -CAkey ${caKeyPath} \
+        -CAcreateserial \
+        -out ${certPath} \
+        -days 365 \
+        -sha256 \
+        -extfile ${extPath}
+    `)
 }
 
 module.exports = {
     generateKey,
     generateCSR,
     createExtFile,
-    signCertificate
+    signCertificate,
 }
