@@ -14,7 +14,23 @@ function removeDirectory(dirPath) {
     }
 }
 
+// Функция для создания файла, если его нет
+function createFileIfNotExists(filePath, content = '') {
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, content)
+    }
+}
+
+// Функция для удаления файла
+function removeFile(filePath) {
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath)
+    }
+}
+
 module.exports = {
     createDirectoryIfNotExists,
     removeDirectory,
+    createFileIfNotExists,
+    removeFile,
 }
