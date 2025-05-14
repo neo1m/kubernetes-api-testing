@@ -48,7 +48,7 @@ afterAll(() => {
 
 describe('[CSR approved]', () => {
   describe('[when CSR data and API request are valid]', () => {
-    test.only('should prepare openssl files', async () => {
+    test('should prepare openssl files', async () => {
       // Subject
       const subject = [
         `CN=system:bootstrap:${nodeData.nodeName}`,
