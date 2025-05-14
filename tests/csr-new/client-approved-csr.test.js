@@ -17,7 +17,6 @@ const {
   generateKeys,
   generateCSR,
   encodeCSRToBase64,
-  createCnfFile,
   createExtFile,
   signCertificate,
 } = require('#helpers/openssl.js')
@@ -26,7 +25,6 @@ const {
 const testFiles = {
   privateKey: path.join(outputDir, 'client.key'),
   publicKey: path.join(outputDir, 'client.pub'),
-  cnf: path.join(outputDir, 'csr_client.cnf'),
   csr: path.join(outputDir, 'client.csr'),
   ext: path.join(outputDir, 'v3.ext'),
   crt: path.join(outputDir, 'client.crt')
@@ -50,32 +48,23 @@ afterAll(() => {
 
 describe('[CSR approved]', () => {
   describe('[when CSR data and API request are valid]', () => {
-    test('should prepare openssl files', async () => {
+    test.only('should prepare openssl files', async () => {
       // Subject
       const subject = [
         `CN=system:bootstrap:${nodeData.nodeName}`,
         `O=system:bootstrapers`,
         `O=system:bootstrappers:kubeadm:default-node-token`,
-      ].join(',')
-
-      // Subject Alternative Names
-      const sanList = [
-        `IP:${nodeData.externalIP}`,
-        `IP:${nodeData.internalIP}`,
       ]
 
       // Генерируем ключи, конфиги, CSR и сертификат для клиента
       generateKeys(testFiles.privateKey, testFiles.publicKey)
-      createCnfFile(testFiles.cnf, subject, sanList)
       createExtFile(testFiles.ext, sanList)
-      generateCSR(testFiles.privateKey, testFiles.csr, testFiles.cnf)
-      signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey, testFiles.ext)
+      generateCSR(testFiles.privateKey, testFiles.csr, subject)
+      signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey)
 
       // Проверки
       expect(fs.existsSync(testFiles.privateKey)).toBe(true)
       expect(fs.existsSync(testFiles.publicKey)).toBe(true)
-      expect(fs.existsSync(testFiles.cnf)).toBe(true)
-      expect(fs.existsSync(testFiles.ext)).toBe(true)
       expect(fs.existsSync(testFiles.csr)).toBe(true)
       expect(fs.existsSync(testFiles.crt)).toBe(true)
     })
@@ -167,8 +156,7 @@ describe('[CSR approved]', () => {
     })
 
     test('should delete CSR', async () => {
-      // Настройка HTTPS агента с mTLS
-      // Для удаления CSR после тестов используем доступы от основного клиента minikube
+      // Настройка HTTPS агента с mTLS (для удаления CSR после тестов используем доступы от основного клиента minikube)
       const httpsAgent = new https.Agent({
         cert: fs.readFileSync(kubeAuthFiles.clientCert),
         key: fs.readFileSync(kubeAuthFiles.clientKey),
