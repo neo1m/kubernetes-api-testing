@@ -38,9 +38,8 @@ const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
 
 const commonNames = [
-  // Случайные идентификаторы
+  // Тестовые идентификаторы
   'qwerty123',
-  // Узлы Node
   `system:node:${nodeData.nodeName}`,
   // Специальные идентификаторы
   'system:anonymous',
@@ -157,7 +156,7 @@ describe('[CSR denied]', () => {
 
   describe.each(commonNames)
   ('[when Subject Common Name in CSR equal "%s"]', (commonName) => {
-    test.only('should prepare openssl files', async () => {
+    test('should prepare openssl files', async () => {
       // Subject
       const subject = [
         `CN=${commonName}`,
