@@ -97,18 +97,12 @@ describe('[CSR approved]', () => {
           name: csrName
         },
         spec: {
-          groups: [
-            "system:bootstrappers",
-            "system:bootstrappers:kubeadm:default-node-token",
-            "system:authenticated"
-          ],
           request: base64CSR,
           signerName: "kubernetes.io/kube-apiserver-client-kubelet",
           usages: [
             "digital signature",
             "client auth"
           ],
-          username: `system:bootstrap:${nodeData.nodeName}`
         }
       }
 
