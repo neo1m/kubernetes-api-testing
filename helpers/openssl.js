@@ -103,8 +103,6 @@ function createCnfFile(configPath, subject, sanList = []) {
  */
 function createExtFile(extPath, sanList) {
     const extContent = [
-        'basicConstraints=CA:FALSE',
-        'keyUsage = digitalSignature, keyEncipherment',
         `subjectAltName = ${sanList.join(',')}`,
     ].join('\n')
     fs.writeFileSync(extPath, extContent)
