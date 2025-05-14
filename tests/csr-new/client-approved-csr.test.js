@@ -53,7 +53,7 @@ describe('[CSR approved]', () => {
     test('should prepare openssl files', async () => {
       // Subject
       const subject = [
-        `CN=system:node:${nodeData.nodeName}`,
+        `CN=system:bootstrap:${nodeData.nodeName}`,
         `O=system:bootstrapers`,
         `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
