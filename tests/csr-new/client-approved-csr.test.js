@@ -17,7 +17,6 @@ const {
   generateKeys,
   generateCSR,
   encodeCSRToBase64,
-  createExtFile,
   signCertificate,
 } = require('#helpers/openssl.js')
 
@@ -58,7 +57,6 @@ describe('[CSR approved]', () => {
 
       // Генерируем ключи, конфиги, CSR и сертификат для клиента
       generateKeys(testFiles.privateKey, testFiles.publicKey)
-      createExtFile(testFiles.ext, sanList)
       generateCSR(testFiles.privateKey, testFiles.csr, subject)
       signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey)
 
