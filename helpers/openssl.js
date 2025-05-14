@@ -30,16 +30,28 @@ function generateKeys(privateKeyPath, publicKeyPath) {
  *
  * @param {string} privateKeyPath - Путь к приватному ключу (например, './key.pem').
  * @param {string} csrPath - Путь для сохранения CSR файла (например, './cert.csr').
- * @param {string} configPath - Путь к конфигурационному файлу OpenSSL (например, './csr_config.cnf').
+ * @param {string[]} subject - Массив компонентов Subject (например ["O=system:bootstrapers", "CN=myuser"])
+ * @param {string[]} [san=[]] - Массив SAN (например ["DNS:example.com"])
  */
-function generateCSR(privateKeyPath, csrPath, configPath) {
-    execSync(`
+function generateCSR(privateKeyPath, csrPath, subject, san = []) {
+    // Формируем строку Subject
+    const subjectStr = subject.join('/')
+
+    // Собираем команду OpenSSL
+    let command = `
         openssl req \
         -new \
         -key ${privateKeyPath} \
         -out ${csrPath} \
-        -config "${configPath}"
-    `, { stdio: 'ignore' })
+        -subj "/${subjectStr}"
+    `
+
+    // Добавляем SAN если есть
+    if (san && san.length > 0) {
+        command += ` -addext "subjectAltName=${san.join(',')}"`
+    }
+
+    execSync(command, { stdio: 'ignore' })
 }
 
 /**
@@ -53,50 +65,8 @@ function encodeCSRToBase64(csrPath) {
 }
 
 /**
- * Генерирует временный конфигурационный файл для CSR с SAN.
- * @param {string} configPath - Пример: "CN=example.com,O=MyOrg,C=US"
- * @param {string} subject - Пример: "CN=example.com,O=MyOrg,C=US"
- * @param {string[]} sanList - Пример: ["DNS:example.com", "DNS:www.example.com"]
- * @returns {string} путь к созданному файлу
- */
-function createCnfFile(configPath, subject, sanList = []) {
-    const dnSection = subject
-        .split(',')
-        .map(entry => {
-            const [key, value] = entry.split('=')
-            return `${key.trim()} = ${value.trim()}`
-        })
-        .join('\n')
-
-    const sanLine = sanList.length > 0
-        ? `subjectAltName = ${sanList.join(',')}`
-        : ''
-
-    const lines = [
-        '[ req ]',
-        'default_bits       = 2048',
-        'prompt             = no',
-        'default_md         = sha256',
-        'distinguished_name = dn',
-        'req_extensions     = req_ext',
-        '',
-        '[ dn ]',
-        dnSection,
-        '',
-        '[ req_ext ]',
-        sanLine
-    ]
-
-    const configContent = lines
-        .filter(line => line.trim() !== '')
-        .join('\n')
-
-    fs.writeFileSync(configPath, configContent)
-}
-
-/**
  * Создаёт временный конфигурационный файл расширений для подписания сертификата (X.509).
- * Включает SAN (Subject Alternative Names) и базовые настройки.
+ * Включает SAN (Subject Alternative Names).
  *
  * @param {string} extPath - Путь для сохранения расширенного конфигурационного файла (например, './ext.cnf').
  * @param {string[]} sanList - Список SAN-значений, например: ['DNS:example.com', 'DNS:www.example.com'].
@@ -117,8 +87,9 @@ function createExtFile(extPath, sanList) {
  * @param {string} caKeyPath - Путь к приватному ключу CA (например, './ca.key').
  * @param {string} extPath - Путь к конфигурационному файлу расширений (например, './ext.cnf').
  */
-function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
-    execSync(`
+function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath = null) {
+    // Собираем команду OpenSSL
+    let command = `
         openssl x509 \
         -req \
         -in ${csrPath} \
@@ -127,16 +98,21 @@ function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath) {
         -CAcreateserial \
         -out ${certPath} \
         -days 365 \
-        -sha256 \
-        -extfile ${extPath}
-    `, { stdio: 'ignore' })
+        -sha256
+    `
+
+    // Добавляем extentions если есть
+    if (extPath) {
+        command += ` -extfile ${extPath}`
+    }
+
+    execSync(command, { stdio: 'ignore' })
 }
 
 module.exports = {
     generateKeys,
     generateCSR,
     encodeCSRToBase64,
-    createCnfFile,
     createExtFile,
     signCertificate,
 }
