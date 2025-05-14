@@ -40,17 +40,6 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
 
-// Данные для успешного CSR
-const subject = [
-  `CN=system:node:${nodeData.nodeName}`,
-  `O=system:nodes`,
-].join(',')
-
-const sanList = [
-  `IP:${nodeData.externalIP}`,
-  `IP:${nodeData.internalIP}`,
-]
-
 beforeAll(() => {
   createDirectoryIfNotExists(outputDir)
 })
@@ -62,6 +51,19 @@ afterAll(() => {
 describe('[CSR approved]', () => {
   describe('[when CSR data and API request are valid]', () => {
     test('should prepare openssl files', async () => {
+      // Subject
+      const subject = [
+        `CN=system:node:${nodeData.nodeName}`,
+        `O=system:nodes`,
+      ].join(',')
+
+      // Subject Alternative Names
+      const sanList = [
+        `IP:${nodeData.externalIP}`,
+        `IP:${nodeData.internalIP}`,
+      ]
+
+      // Генерируем ключи, конфиги, CSR и сертификат для клиента
       generateKeys(testFiles.privateKey, testFiles.publicKey)
       createCnfFile(testFiles.cnf, subject, sanList)
       createExtFile(testFiles.ext, sanList)
@@ -114,12 +116,6 @@ describe('[CSR approved]', () => {
         agent: httpsAgent,
       })
       const body = await res.json()
-
-      // Результат
-      console.log('\nres.status:')
-      console.log(res.status)
-      console.log('\nbody:')
-      console.log(body)
 
       // Проверки
       expect(res.status).toBe(201)
@@ -185,12 +181,6 @@ describe('[CSR approved]', () => {
         agent: httpsAgent,
       })
       const body = await res.json()
-
-      // Результат
-      console.log('\nres.status:')
-      console.log(res.status)
-      console.log('\nbody:')
-      console.log(body)
 
       // Проверки
       expect(res.status).toBe(200)
