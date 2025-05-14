@@ -3,6 +3,9 @@ const path = require('path')
 const https = require('https')
 const fetch = require('node-fetch')
 
+// Базовый конфиг
+const { outputDir, kubeAuthFiles, kube } = require('#root/config.js')
+
 // Тестовые данные
 const { csrTests } = require('#fixtures/testData.js')
 
@@ -22,30 +25,19 @@ const {
   signCertificate,
 } = require('#helpers/openssl.js')
 
-// Директория для временного хранения файлов
-const outputDir = path.resolve(__dirname, '..', '..', 'fixtures', 'tmp')
+// Пути к временным файлам
+const testFiles = {
+  privateKey: path.join(outputDir, 'client.key'),
+  publicKey: path.join(outputDir, 'client.pub'),
+  cnf: path.join(outputDir, 'csr_client.cnf'),
+  csr: path.join(outputDir, 'client.csr'),
+  ext: path.join(outputDir, 'v3.ext'),
+  crt: path.join(outputDir, 'client.crt')
+}
 
-// Временные openssl файлы
-const privateKeyPath = path.join(outputDir, 'client.key')
-const publicKeyPath = path.join(outputDir, 'client.pub')
-const cnfPath = path.join(outputDir, 'csr_client.cnf')
-const clientCSRPath = path.join(outputDir, 'client.csr')
-const extPath = path.join(outputDir, 'v3.ext')
-const clientCrtPath = path.join(outputDir, 'client.crt')
-
-// Корневой сертификат
-const caCrtPath = path.join(process.env.HOME, '.minikube/ca.crt')
-const caKeyPath = path.join(process.env.HOME, '.minikube/ca.key')
-
-// Сертификат и ключ для minikube пользователя
-const minikubeCertPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.crt')
-const minikubeKeyPath = path.join(process.env.HOME, '.minikube/profiles/minikube/client.key')
-
-// Адрес кластера
-const kubeHost = require('child_process').execSync('minikube ip').toString().trim()
-const kubePort = 8443
-const baseURL = `https://${kubeHost}:${kubePort}`
-const csrBasePath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
+// Адрес API
+const baseURL = `https://${kube.host}:${kube.port}`
+const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 
 // Тестовые данные
 const csrName = csrTests.clientCSRName
@@ -64,27 +56,35 @@ afterAll(() => {
 describe('[CSR approved]', () => {
   describe('[when CSR data and API request are valid]', () => {
     test('should prepare openssl files', async () => {
-      generateKeys(privateKeyPath, publicKeyPath)
-      createCnfFile(cnfPath, subject, sanList)
-      createExtFile(extPath, sanList)
-      generateCSR(privateKeyPath, clientCSRPath, cnfPath)
-      signCertificate(clientCSRPath, clientCrtPath, caCrtPath, caKeyPath, extPath)
+      generateKeys(testFiles.privateKey, testFiles.publicKey)
+      createCnfFile(testFiles.cnf, subject, sanList)
+      createExtFile(testFiles.ext, sanList)
+      generateCSR(testFiles.privateKey, testFiles.csr, testFiles.cnf)
+      signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey, testFiles.ext)
+
+      // Проверки
+      expect(fs.existsSync(testFiles.privateKey)).toBe(true)
+      expect(fs.existsSync(testFiles.publicKey)).toBe(true)
+      expect(fs.existsSync(testFiles.cnf)).toBe(true)
+      expect(fs.existsSync(testFiles.ext)).toBe(true)
+      expect(fs.existsSync(testFiles.csr)).toBe(true)
+      expect(fs.existsSync(testFiles.crt)).toBe(true)
     })
 
     test('should create CSR', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
-        cert: fs.readFileSync(clientCrtPath),
-        key: fs.readFileSync(privateKeyPath),
-        ca: fs.readFileSync(caCrtPath),
+        cert: fs.readFileSync(testFiles.crt),
+        key: fs.readFileSync(testFiles.privateKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
         rejectUnauthorized: false,
       })
 
       // CSR в формате base64
-      const base64CS = encodeCSRToBase64(clientCSRPath)
+      const base64CSR = encodeCSRToBase64(testFiles.csr)
 
       // API
-      const clientCSR = {
+      const certificateSigningRequest = {
         apiVersion: "certificates.k8s.io/v1",
         kind: "CertificateSigningRequest",
         metadata: {
@@ -96,7 +96,7 @@ describe('[CSR approved]', () => {
             "system:bootstrappers:kubeadm:default-node-token",
             "system:authenticated"
           ],
-          request: base64CS,
+          request: base64CSR,
           signerName: "kubernetes.io/kube-apiserver-client-kubelet",
           usages: [
             "digital signature",
@@ -107,9 +107,9 @@ describe('[CSR approved]', () => {
       }
 
       // Запрос
-      const res = await fetch(`${baseURL}${csrBasePath}`, {
+      const res = await fetch(`${baseURL}${csrPath}`, {
         method: 'POST',
-        body: JSON.stringify(clientCSR),
+        body: JSON.stringify(certificateSigningRequest),
         headers: { 'Content-Type': 'application/json' },
         agent: httpsAgent,
       })
@@ -129,9 +129,9 @@ describe('[CSR approved]', () => {
     test('should approve CSR', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
-        cert: fs.readFileSync(clientCrtPath),
-        key: fs.readFileSync(privateKeyPath),
-        ca: fs.readFileSync(caCrtPath),
+        cert: fs.readFileSync(testFiles.crt),
+        key: fs.readFileSync(testFiles.privateKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
         rejectUnauthorized: false,
       })
 
@@ -145,7 +145,7 @@ describe('[CSR approved]', () => {
 
       // Цикл запросов
       while (Date.now() - startTime < maxRetryTime) {
-        const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
+        const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
           method: 'GET',
           agent: httpsAgent,
         })
@@ -173,14 +173,14 @@ describe('[CSR approved]', () => {
       // Настройка HTTPS агента с mTLS
       // Для удаления CSR после тестов используем доступы от основного клиента minikube
       const httpsAgent = new https.Agent({
-        cert: fs.readFileSync(minikubeCertPath),
-        key: fs.readFileSync(minikubeKeyPath),
-        ca: fs.readFileSync(caCrtPath),
+        cert: fs.readFileSync(kubeAuthFiles.clientCert),
+        key: fs.readFileSync(kubeAuthFiles.clientKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
         rejectUnauthorized: false,
       })
 
       // Запрос на удаление
-      const res = await fetch(`${baseURL}${csrBasePath}/${csrName}`, {
+      const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
         method: 'DELETE',
         agent: httpsAgent,
       })
