@@ -37,6 +37,7 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
 
+// Массив различных Common Name для проверки в тестах
 const commonNames = [
   // Тестовые идентификаторы
   'qwerty123',
