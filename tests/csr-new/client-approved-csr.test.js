@@ -41,7 +41,11 @@ const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
 
 // Данные для успешного CSR
-const subject = `CN=system:node:${nodeData.nodeName},O=system:nodes`
+const subject = [
+  `CN=system:node:${nodeData.nodeName}`,
+  `O=system:nodes`,
+].join(',')
+
 const sanList = [
   `IP:${nodeData.externalIP}`,
   `IP:${nodeData.internalIP}`,
