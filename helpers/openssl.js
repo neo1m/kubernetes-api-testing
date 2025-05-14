@@ -1,5 +1,5 @@
-const { execSync } = require('child_process')
 const fs = require('fs')
+const { execSync } = require('child_process')
 
 /**
  * Генерирует пару RSA-ключей: приватный и публичный.
@@ -8,21 +8,25 @@ const fs = require('fs')
  * @param {string} publicKeyPath - Путь для сохранения публичного ключа.
  */
 function generateKeys(privateKeyPath, publicKeyPath) {
-    // Генерация приватного ключа
-    execSync(`
-        openssl genpkey \
-        -algorithm RSA \
-        -out ${privateKeyPath} \
-        -pkeyopt rsa_keygen_bits:2048
-    `, { stdio: 'ignore' })
+    // Команда для генерации приватного ключа
+    const genPrivateKeyCmd = [
+        'openssl', 'genpkey',
+        '-algorithm', 'RSA',
+        '-out', privateKeyPath,
+        '-pkeyopt', 'rsa_keygen_bits:2048'
+    ].join(' ')
 
-    // Извлечение публичного ключа из приватного
-    execSync(`
-        openssl rsa \
-        -in ${privateKeyPath} \
-        -pubout \
-        -out ${publicKeyPath}
-    `, { stdio: 'ignore' })
+    execSync(genPrivateKeyCmd, { stdio: 'ignore' })
+
+    // Команда для извлечения публичного ключа
+    const extractPublicKeyCmd = [
+        'openssl', 'rsa',
+        '-in', privateKeyPath,
+        '-pubout',
+        '-out', publicKeyPath
+    ].join(' ')
+
+    execSync(extractPublicKeyCmd, { stdio: 'ignore' })
 }
 
 /**
