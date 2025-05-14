@@ -54,7 +54,8 @@ describe('[CSR approved]', () => {
       // Subject
       const subject = [
         `CN=system:node:${nodeData.nodeName}`,
-        `O=system:nodes`,
+        `O=system:bootstrapers`,
+        `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
 
       // Subject Alternative Names
