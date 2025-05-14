@@ -37,19 +37,22 @@ function generateCSR(privateKeyPath, csrPath, subject, san = []) {
     // Формируем строку Subject
     const subjectStr = subject.join('/')
 
-    // Собираем команду OpenSSL
-    let command = `
-        openssl req \
-        -new \
-        -key ${privateKeyPath} \
-        -out ${csrPath} \
-        -subj "/${subjectStr}"
-    `
+    // Аргументы команды
+    const args = [
+        'openssl', 'req',
+        '-new',
+        '-key', privateKeyPath,
+        '-out', csrPath,
+        '-subj', `"/${subjectStr}"`
+    ]
 
     // Добавляем SAN если есть
     if (san && san.length > 0) {
-        command += ` -addext "subjectAltName=${san.join(',')}"`
+        args.push('-addext', `"subjectAltName=${san.join(',')}"`)
     }
+
+    // Собираем команду OpenSSL
+    const command = args.join(' ')
 
     execSync(command, { stdio: 'ignore' })
 }
@@ -88,23 +91,26 @@ function createExtFile(extPath, sanList) {
  * @param {string} extPath - Путь к конфигурационному файлу расширений (например, './ext.cnf').
  */
 function signCertificate(csrPath, certPath, caCertPath, caKeyPath, extPath = null) {
-    // Собираем команду OpenSSL
-    let command = `
-        openssl x509 \
-        -req \
-        -in ${csrPath} \
-        -CA ${caCertPath} \
-        -CAkey ${caKeyPath} \
-        -CAcreateserial \
-        -out ${certPath} \
-        -days 365 \
-        -sha256
-    `
+    // Аргументы команды
+    const args = [
+        'openssl', 'x509',
+        '-req',
+        '-in', csrPath,
+        '-CA', caCertPath,
+        '-CAkey', caKeyPath,
+        '-CAcreateserial',
+        '-out', certPath,
+        '-days', '365',
+        '-sha256'
+    ]
 
     // Добавляем extentions если есть
     if (extPath) {
-        command += ` -extfile ${extPath}`
+        args.push('-extfile', extPath)
     }
+
+    // Собираем команду OpenSSL
+    const command = args.join(' ')
 
     execSync(command, { stdio: 'ignore' })
 }
