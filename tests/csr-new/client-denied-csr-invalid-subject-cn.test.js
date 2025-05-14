@@ -53,7 +53,8 @@ describe('[CSR denied]', () => {
     test('should prepare openssl files', async () => {
       // Subject
       const subject = [
-        `O=system:nodes`,
+        `O=system:bootstrapers`,
+        `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
 
       // Subject Alternative Names
@@ -133,7 +134,8 @@ describe('[CSR denied]', () => {
       // Subject
       const subject = [
         `CN=qwerty123`,
-        `O=system:nodes`,
+        `O=system:bootstrapers`,
+        `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
 
       // Subject Alternative Names
@@ -213,7 +215,8 @@ describe('[CSR denied]', () => {
       // Subject
       const subject = [
         `CN=system:anonymous`,
-        `O=system:nodes`,
+        `O=system:bootstrapers`,
+        `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
 
       // Subject Alternative Names
@@ -293,7 +296,8 @@ describe('[CSR denied]', () => {
       // Subject
       const subject = [
         `CN=system:admin`,
-        `O=system:nodes`,
+        `O=system:bootstrapers`,
+        `O=system:bootstrappers:kubeadm:default-node-token`,
       ].join(',')
 
       // Subject Alternative Names
