@@ -160,7 +160,7 @@ describe('[CSR denied]', () => {
       expect(fs.existsSync(testFiles.crt)).toBe(true)
     })
 
-    test('should not create CSR', async () => {
+    test('should create CSR', async () => {
       // Настройка HTTPS агента с mTLS
       const httpsAgent = new https.Agent({
         cert: fs.readFileSync(testFiles.crt),
@@ -205,8 +205,74 @@ describe('[CSR denied]', () => {
       console.log(body)
 
       // Проверки
-      expect(res.status).toBe(403)
-      expect(body.status).toBe('Failure')
+      expect(res.status).toBe(201)
+      expect(body.metadata.name).toBe(csrName)
+    })
+
+    test('should deny CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(testFiles.crt),
+        key: fs.readFileSync(testFiles.privateKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Максимальное время ожидания
+      const maxRetryTime = 60000
+      const retryInterval = 5000
+      const startTime = Date.now()
+      let expectedStatus = 'Denied'
+      let lastStatus = ''
+      let body
+
+      // Цикл запросов
+      while (Date.now() - startTime < maxRetryTime) {
+        const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+          method: 'GET',
+          agent: httpsAgent,
+        })
+
+        body = await res.json()
+        lastStatus = body.status?.conditions?.[0]?.type || ''
+
+        if (res.status === 200 && lastStatus === expectedStatus) {
+          // Успешный случай
+          expect(res.status).toBe(200)
+          expect(body.metadata.name).toBe(csrName)
+          expect(body.status.conditions[0].type).toBe(expectedStatus)
+          return
+        }
+
+        // Ждём перед следующим запросом
+        await new Promise(resolve => setTimeout(resolve, retryInterval))
+      }
+
+      // Если дошли сюда - значит Approved не получен за отведённое время
+      throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
+    })
+
+    test('should delete CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      // Для удаления CSR после тестов используем доступы от основного клиента minikube
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(kubeAuthFiles.clientCert),
+        key: fs.readFileSync(kubeAuthFiles.clientKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Запрос на удаление
+      const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+        method: 'DELETE',
+        agent: httpsAgent,
+      })
+      const body = await res.json()
+
+      // Проверки
+      expect(res.status).toBe(200)
+      expect(body.status).toBe('Success')
+      expect(body.details.name).toBe(csrName)
     })
   })
 
@@ -286,8 +352,74 @@ describe('[CSR denied]', () => {
       console.log(body)
 
       // Проверки
-      expect(res.status).toBe(403)
-      expect(body.status).toBe('Failure')
+      expect(res.status).toBe(201)
+      expect(body.metadata.name).toBe(csrName)
+    })
+
+    test('should deny CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(testFiles.crt),
+        key: fs.readFileSync(testFiles.privateKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Максимальное время ожидания
+      const maxRetryTime = 60000
+      const retryInterval = 5000
+      const startTime = Date.now()
+      let expectedStatus = 'Denied'
+      let lastStatus = ''
+      let body
+
+      // Цикл запросов
+      while (Date.now() - startTime < maxRetryTime) {
+        const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+          method: 'GET',
+          agent: httpsAgent,
+        })
+
+        body = await res.json()
+        lastStatus = body.status?.conditions?.[0]?.type || ''
+
+        if (res.status === 200 && lastStatus === expectedStatus) {
+          // Успешный случай
+          expect(res.status).toBe(200)
+          expect(body.metadata.name).toBe(csrName)
+          expect(body.status.conditions[0].type).toBe(expectedStatus)
+          return
+        }
+
+        // Ждём перед следующим запросом
+        await new Promise(resolve => setTimeout(resolve, retryInterval))
+      }
+
+      // Если дошли сюда - значит Approved не получен за отведённое время
+      throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
+    })
+
+    test('should delete CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      // Для удаления CSR после тестов используем доступы от основного клиента minikube
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(kubeAuthFiles.clientCert),
+        key: fs.readFileSync(kubeAuthFiles.clientKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Запрос на удаление
+      const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+        method: 'DELETE',
+        agent: httpsAgent,
+      })
+      const body = await res.json()
+
+      // Проверки
+      expect(res.status).toBe(200)
+      expect(body.status).toBe('Success')
+      expect(body.details.name).toBe(csrName)
     })
   })
 
@@ -367,8 +499,74 @@ describe('[CSR denied]', () => {
       console.log(body)
 
       // Проверки
-      expect(res.status).toBe(403)
-      expect(body.status).toBe('Failure')
+      expect(res.status).toBe(201)
+      expect(body.metadata.name).toBe(csrName)
+    })
+
+    test('should deny CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(testFiles.crt),
+        key: fs.readFileSync(testFiles.privateKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Максимальное время ожидания
+      const maxRetryTime = 60000
+      const retryInterval = 5000
+      const startTime = Date.now()
+      let expectedStatus = 'Denied'
+      let lastStatus = ''
+      let body
+
+      // Цикл запросов
+      while (Date.now() - startTime < maxRetryTime) {
+        const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+          method: 'GET',
+          agent: httpsAgent,
+        })
+
+        body = await res.json()
+        lastStatus = body.status?.conditions?.[0]?.type || ''
+
+        if (res.status === 200 && lastStatus === expectedStatus) {
+          // Успешный случай
+          expect(res.status).toBe(200)
+          expect(body.metadata.name).toBe(csrName)
+          expect(body.status.conditions[0].type).toBe(expectedStatus)
+          return
+        }
+
+        // Ждём перед следующим запросом
+        await new Promise(resolve => setTimeout(resolve, retryInterval))
+      }
+
+      // Если дошли сюда - значит Approved не получен за отведённое время
+      throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
+    })
+
+    test('should delete CSR', async () => {
+      // Настройка HTTPS агента с mTLS
+      // Для удаления CSR после тестов используем доступы от основного клиента minikube
+      const httpsAgent = new https.Agent({
+        cert: fs.readFileSync(kubeAuthFiles.clientCert),
+        key: fs.readFileSync(kubeAuthFiles.clientKey),
+        ca: fs.readFileSync(kubeAuthFiles.caCrt),
+        rejectUnauthorized: false,
+      })
+
+      // Запрос на удаление
+      const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
+        method: 'DELETE',
+        agent: httpsAgent,
+      })
+      const body = await res.json()
+
+      // Проверки
+      expect(res.status).toBe(200)
+      expect(body.status).toBe('Success')
+      expect(body.details.name).toBe(csrName)
     })
   })
 })
