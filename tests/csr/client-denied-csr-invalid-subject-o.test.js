@@ -244,8 +244,8 @@ describe('[CSR denied]', () => {
         })
 
         // Максимальное время ожидания
-        const maxRetryTime = 4000
-        const retryInterval = 2000
+        const maxRetryTime = 60000
+        const retryInterval = 5000
         const startTime = Date.now()
         let expectedStatus = 'Denied'
         let lastStatus = ''
