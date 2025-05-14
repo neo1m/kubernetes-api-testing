@@ -162,7 +162,7 @@ describe('[CSR approved]', () => {
     })
 
     test('should delete CSR', async () => {
-      // Настройка HTTPS агента с mTLS (для удаления CSR после тестов используем доступы от основного клиента minikube)
+      // Настройка HTTPS агента с mTLS (для удаления CSR после тестов используем доступы от основного клиента)
       const httpsAgent = new https.Agent({
         cert: fs.readFileSync(kubeAuthFiles.clientCert),
         key: fs.readFileSync(kubeAuthFiles.clientKey),
