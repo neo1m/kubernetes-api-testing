@@ -12,6 +12,7 @@
   "imports": {
     "#fixtures/": "./fixtures/",
     "#helpers/": "./helpers/",
-    "#tests/": "./tests/"
+    "#tests/": "./tests/",
+    "#root/": "./"
   }
 }

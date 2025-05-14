@@ -10,4 +10,12 @@ module.exports = {
 
   // Вспомогательный код для тестов
   setupFilesAfterEnv: ['./jest.setup.js'],
+
+  // Игнорирование файлов и директорий
+  testPathIgnorePatterns: [
+    "/node_modules/", // Игнорируем директорию node_modules
+    "/old-tests/", // Игнорируем директорию old-tests
+    ".*\\.skip\\.test\\.js$", // Игнорируем файлы с суффиксом .skip.test.js
+    ".*disabled.*\\.test\\.js$", // Игнорировать файлы с "disabled" в имени
+  ],
 }
