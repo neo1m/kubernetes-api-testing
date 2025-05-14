@@ -10,10 +10,7 @@ const { outputDir, kubeAuthFiles, kube } = require('#root/config.js')
 const { csrTests } = require('#fixtures/testData.js')
 
 // Вспомогательные методы
-const {
-  createDirectoryIfNotExists,
-  removeDirectory,
-} = require('#helpers/common.js')
+const { createDirectoryIfNotExists, removeDirectory } = require('#helpers/common.js')
 
 // Методы для работы с openssl
 const {
@@ -42,8 +39,13 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 // Тестовые данные
 const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
-const subject = 'CN=system:node:csr-tests-kuber-node,O=system:nodes'
-const sanList = ['DNS:example.com', 'DNS:www.example.com']
+
+// Данные для успешного CSR
+const subject = `CN=system:node:${nodeData.nodeName},O=system:nodes`
+const sanList = [
+  `IP:${nodeData.externalIP}`,
+  `IP:${nodeData.internalIP}`,
+]
 
 beforeAll(() => {
   createDirectoryIfNotExists(outputDir)
@@ -83,7 +85,7 @@ describe('[CSR approved]', () => {
       // CSR в формате base64
       const base64CSR = encodeCSRToBase64(testFiles.csr)
 
-      // API
+      // API тело запроса
       const certificateSigningRequest = {
         apiVersion: "certificates.k8s.io/v1",
         kind: "CertificateSigningRequest",
