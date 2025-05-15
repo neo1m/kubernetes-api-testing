@@ -1,6 +1,5 @@
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
 const fetch = require('node-fetch')
 
 // Базовый конфиг
@@ -10,7 +9,11 @@ const { outputDir, kubeAuthFiles, kube } = require('#root/config.js')
 const { csrTests } = require('#fixtures/testData.js')
 
 // Вспомогательные методы
-const { createDirectoryIfNotExists, removeDirectory } = require('#helpers/common.js')
+const {
+  createDirectoryIfNotExists,
+  removeDirectory,
+  createHttpsAgent,
+} = require('#helpers/common.js')
 
 // Методы для работы с openssl
 const {
@@ -330,12 +333,7 @@ describe('[CSR denied]', () => {
 
       test('should create CSR', async () => {
         // Настройка HTTPS агента с mTLS
-        const httpsAgent = new https.Agent({
-          cert: fs.readFileSync(testFiles.crt),
-          key: fs.readFileSync(testFiles.privateKey),
-          ca: fs.readFileSync(kubeAuthFiles.caCrt),
-          rejectUnauthorized: false,
-        })
+        const httpsAgent = createHttpsAgent(testFiles.crt, testFiles.privateKey, kubeAuthFiles.caCrt)
 
         // CSR в формате base64
         const base64CSR = encodeCSRToBase64(testFiles.csr)
@@ -380,12 +378,7 @@ describe('[CSR denied]', () => {
 
       test('should deny CSR', async () => {
         // Настройка HTTPS агента с mTLS
-        const httpsAgent = new https.Agent({
-          cert: fs.readFileSync(testFiles.crt),
-          key: fs.readFileSync(testFiles.privateKey),
-          ca: fs.readFileSync(kubeAuthFiles.caCrt),
-          rejectUnauthorized: false,
-        })
+        const httpsAgent = createHttpsAgent(testFiles.crt, testFiles.privateKey, kubeAuthFiles.caCrt)
 
         // Максимальное время ожидания
         const maxRetryTime = 60000
@@ -435,12 +428,7 @@ describe('[CSR denied]', () => {
 
       test('should delete CSR', async () => {
         // Настройка HTTPS агента с mTLS (для удаления CSR после тестов используем доступы от основного клиента)
-        const httpsAgent = new https.Agent({
-          cert: fs.readFileSync(kubeAuthFiles.clientCert),
-          key: fs.readFileSync(kubeAuthFiles.clientKey),
-          ca: fs.readFileSync(kubeAuthFiles.caCrt),
-          rejectUnauthorized: false,
-        })
+        const httpsAgent = createHttpsAgent(kubeAuthFiles.clientCert, kubeAuthFiles.clientKey, kubeAuthFiles.caCrt)
 
         // Запрос на удаление
         const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
