@@ -99,6 +99,66 @@ const csrDeniedGroups = [
     name: 'required groups with suffix',
     groups: ['system:bootstrappersx', 'system:bootstrappers:kubeadm:default-node-token'],
   },
+  {
+    name: 'only system:bootstrapers (missing second)',
+    groups: ['system:bootstrapers'],
+  },
+  {
+    name: 'only system:bootstrappers:kubeadm:default-node-token (missing first)',
+    groups: ['system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'groups in wrong order',
+    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrapers'],
+  },
+  {
+    name: 'extra group added',
+    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
+  },
+  {
+    name: 'only system:bootstrappers',
+    groups: ['system:bootstrappers'],
+  },
+  {
+    name: 'similar but invalid suffix',
+    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-tokenx'],
+  },
+  {
+    name: 'similar but invalid prefix',
+    groups: ['kubeadm:system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'one valid, one random',
+    groups: ['system:bootstrapers', 'dev-team'],
+  },
+  {
+    name: 'both groups joined as one string',
+    groups: ['system:bootstrapers system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'both groups with case mismatch',
+    groups: ['System:Bootstrapers', 'System:Bootstrappers:Kubeadm:Default-Node-Token'],
+  },
+  {
+    name: 'duplicated system:bootstrapers',
+    groups: ['system:bootstrapers', 'system:bootstrapers'],
+  },
+  {
+    name: 'only unrelated system groups',
+    groups: ['system:nodes', 'system:authenticated'],
+  },
+  {
+    name: 'valid groups with swapped casing',
+    groups: ['System:Bootstrappers', 'System:Bootstrappers:Kubeadm:Default-Node-Token'],
+  },
+  {
+    name: 'only one group with correct structure but typo',
+    groups: ['system:bootstrappers:kubeadm:default-nodetoken'],
+  },
+  {
+    name: 'extra controller group',
+    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'system:controller:job-controller'],
+  },
 ]
 
 beforeAll(() => {

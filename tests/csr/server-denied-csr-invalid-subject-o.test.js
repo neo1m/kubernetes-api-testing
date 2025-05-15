@@ -112,6 +112,86 @@ const csrDeniedGroups = [
     name: 'duplicate system:nodes group',
     groups: ['system:nodes', 'system:nodes'],
   },
+  {
+    name: 'system:nodes with system:bootstrappers',
+    groups: ['system:nodes', 'system:bootstrappers'],
+  },
+  {
+    name: 'system:bootstrappers only',
+    groups: ['system:bootstrappers'],
+  },
+  {
+    name: 'system:authenticated only',
+    groups: ['system:authenticated'],
+  },
+  {
+    name: 'system:unauthenticated only',
+    groups: ['system:unauthenticated'],
+  },
+  {
+    name: 'system:masters only',
+    groups: ['system:masters'],
+  },
+  {
+    name: 'system:serviceaccounts only',
+    groups: ['system:serviceaccounts'],
+  },
+  {
+    name: 'system:serviceaccounts with namespace',
+    groups: ['system:serviceaccounts:my-namespace'],
+  },
+  {
+    name: 'system:kube-proxy only',
+    groups: ['system:kube-proxy'],
+  },
+  {
+    name: 'system:controller:node-controller only',
+    groups: ['system:controller:node-controller'],
+  },
+  {
+    name: 'system:controller:deployment-controller only',
+    groups: ['system:controller:deployment-controller'],
+  },
+  {
+    name: 'system:controller:endpoint-controller only',
+    groups: ['system:controller:endpoint-controller'],
+  },
+  {
+    name: 'system:nodes + system:authenticated',
+    groups: ['system:nodes', 'system:authenticated'],
+  },
+  {
+    name: 'system:nodes + system:unauthenticated',
+    groups: ['system:nodes', 'system:unauthenticated'],
+  },
+  {
+    name: 'system:nodes duplicated',
+    groups: ['system:nodes', 'system:nodes'],
+  },
+  {
+    name: 'system:nodes with kube-controller-manager',
+    groups: ['system:nodes', 'system:kube-controller-manager'],
+  },
+  {
+    name: 'system:nodes with controller groups',
+    groups: ['system:nodes', 'system:controller:replicaset-controller'],
+  },
+  {
+    name: 'multiple unrelated controllers',
+    groups: ['system:controller:cronjob-controller', 'system:controller:statefulset-controller'],
+  },
+  {
+    name: 'controller and serviceaccounts mix',
+    groups: ['system:controller:job-controller', 'system:serviceaccounts'],
+  },
+  {
+    name: 'node-controller with serviceaccounts',
+    groups: ['system:controller:node-controller', 'system:serviceaccounts:kube-system'],
+  },
+  {
+    name: 'system:nodes with lowercase and uppercase variant',
+    groups: ['system:nodes', 'System:Nodes'],
+  },
 ]
 
 beforeAll(() => {
