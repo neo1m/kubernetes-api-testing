@@ -41,8 +41,36 @@ const nodeData = csrTests.nodeData
 // Для данных spec.usages запрещено создание CSR
 const csrCreationForbiddenUsages = [
   {
-    name: 'empty usages array',
+    name: 'valid usages as one string',
+    usages: ['digital signature server auth'],
+  },
+  {
+    name: 'case mismatch in usages',
+    usages: ['Digital Signature', 'Server Auth'],
+  },
+  {
+    name: 'typo in digital signature',
+    usages: ['digita1 signature', 'server auth'],
+  },
+  {
+    name: 'typo in server auth',
+    usages: ['digital signature', 'server authorization'],
+  },
+  {
+    name: 'duplicates only one valid usage',
+    usages: ['server auth', 'server auth'],
+  },
+  {
+    name: 'empty usages list',
     usages: [],
+  },
+  {
+    name: 'one valid and one misspelled usage',
+    usages: ['digital signature', 'servr auth'],
+  },
+  {
+    name: 'both usages misspelled',
+    usages: ['digitl signatur', 'srver aut'],
   },
 ]
 
@@ -107,40 +135,8 @@ const csrDeniedUsages = [
     ],
   },
   {
-    name: 'valid usages as one string',
-    usages: ['digital signature server auth'],
-  },
-  {
-    name: 'case mismatch in usages',
-    usages: ['Digital Signature', 'Server Auth'],
-  },
-  {
-    name: 'typo in digital signature',
-    usages: ['digita1 signature', 'server auth'],
-  },
-  {
-    name: 'typo in server auth',
-    usages: ['digital signature', 'server authorization'],
-  },
-  {
-    name: 'duplicates only one valid usage',
-    usages: ['server auth', 'server auth'],
-  },
-  {
-    name: 'empty usages list',
-    usages: [],
-  },
-  {
     name: 'unrelated usages and one valid',
     usages: ['digital signature', 's/mime'],
-  },
-  {
-    name: 'one valid and one misspelled usage',
-    usages: ['digital signature', 'servr auth'],
-  },
-  {
-    name: 'both usages misspelled',
-    usages: ['digitl signatur', 'srver aut'],
   },
   {
     name: 'valid usages mixed with multiple extras',
