@@ -48,47 +48,61 @@ const csrCreationForbiddenUsages = [
 // Для данных spec.usages отклоняется созданный CSR
 const csrDeniedUsages = [
   {
-    name: 'only digital signature (missing client auth)',
+    name: 'only digital signature',
     usages: ['digital signature'],
   },
   {
-    name: 'only client auth (missing digital signature)',
+    name: 'only client auth',
     usages: ['client auth'],
   },
   {
-    name: 'usages in reverse order',
+    name: 'reverse order of valid usages',
     usages: ['client auth', 'digital signature'],
   },
   {
-    name: 'additional usage: key encipherment',
-    usages: ['digital signature', 'client auth', 'key encipherment'],
-  },
-  {
-    name: 'additional usage: server auth',
+    name: 'valid usages plus one extra',
     usages: ['digital signature', 'client auth', 'server auth'],
   },
   {
-    name: 'missing both required usages',
-    usages: ['server auth', 'key encipherment'],
+    name: 'valid usages plus two extras',
+    usages: ['digital signature', 'client auth', 'server auth', 'key encipherment'],
   },
   {
-    name: 'only one usage: server auth',
-    usages: ['server auth'],
+    name: 'only one unrelated usage',
+    usages: ['code signing'],
   },
   {
-    name: 'empty usages array',
-    usages: [],
+    name: 'unrelated usages only',
+    usages: ['key agreement', 'email protection'],
   },
   {
-    name: 'duplicate digital signature only',
-    usages: ['digital signature', 'digital signature'],
+    name: 'all known usages except valid ones',
+    usages: [
+      'signing',
+      'content commitment',
+      'key encipherment',
+      'key agreement',
+      'data encipherment',
+      'cert sign',
+      'crl sign',
+      'encipher only',
+      'decipher only',
+      'any',
+      'server auth',
+      'code signing',
+      'email protection',
+      's/mime',
+      'ipsec end system',
+      'ipsec tunnel',
+      'ipsec user',
+      'timestamping',
+      'ocsp signing',
+      'microsoft sgc',
+      'netscape sgc'
+    ],
   },
   {
-    name: 'duplicate client auth only',
-    usages: ['client auth', 'client auth'],
-  },
-  {
-    name: 'both usages as one string',
+    name: 'valid usages as one string',
     usages: ['digital signature client auth'],
   },
   {
@@ -97,15 +111,51 @@ const csrDeniedUsages = [
   },
   {
     name: 'typo in digital signature',
-    usages: ['digital signatur', 'client auth'],
+    usages: ['digitaal signature', 'client auth'],
   },
   {
     name: 'typo in client auth',
     usages: ['digital signature', 'client authentication'],
   },
   {
-    name: 'wrong casing in one usage',
-    usages: ['digital signature', 'Client auth'],
+    name: 'duplicates only one valid usage',
+    usages: ['client auth', 'client auth'],
+  },
+  {
+    name: 'empty usages list',
+    usages: [],
+  },
+  {
+    name: 'unrelated usages and one valid',
+    usages: ['client auth', 'server auth'],
+  },
+  {
+    name: 'one valid and one misspelled usage',
+    usages: ['digital signature', 'clint auth'],
+  },
+  {
+    name: 'both usages misspelled',
+    usages: ['digitl signatur', 'clint aut'],
+  },
+  {
+    name: 'valid usages mixed with multiple extras',
+    usages: ['digital signature', 'client auth', 'any', 'server auth', 'timestamping'],
+  },
+  {
+    name: 'only extras from microsoft and netscape',
+    usages: ['microsoft sgc', 'netscape sgc'],
+  },
+  {
+    name: 'ipsec usages only',
+    usages: ['ipsec end system', 'ipsec tunnel', 'ipsec user'],
+  },
+  {
+    name: 'timestamping only',
+    usages: ['timestamping'],
+  },
+  {
+    name: 'ocsp signing only',
+    usages: ['ocsp signing'],
   },
 ]
 
