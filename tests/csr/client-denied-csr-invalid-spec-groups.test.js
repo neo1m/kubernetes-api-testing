@@ -326,8 +326,8 @@ describe('[CSR denied]', () => {
         // Максимальное время ожидания
         const maxRetryTime = 60000
         const retryInterval = 5000
-        const startTime = Date.now()
         const expectedStatus = 'Denied'
+        const startTime = Date.now()
 
         // Цикл запросов
         while (Date.now() - startTime < maxRetryTime) {
@@ -391,6 +391,15 @@ describe('[CSR denied]', () => {
         expect(res.status).toBe(200)
         expect(body.status).toBe('Success')
         expect(body.details.name).toBe(csrName)
+
+        // Возможные статусы ответа
+        const expectedStatus = [
+          200, // CSR успешно удален
+          404, // CSR не найден (не удалось создать ранее)
+        ]
+
+        // Проверки
+        expect(expectedStatus).toContain(res.status)
       })
     })
 })
