@@ -1,4 +1,5 @@
 const fs = require('fs')
+const https = require('https')
 
 // Функция для создания директории, если её нет
 function createDirectoryIfNotExists(dirPath) {
@@ -28,9 +29,20 @@ function removeFile(filePath) {
     }
 }
 
+// Создаёт HTTPS-агент
+function createHttpsAgent(certPath, keyPath, caPath) {
+    return new https.Agent({
+        cert: fs.readFileSync(certPath),
+        key: fs.readFileSync(keyPath),
+        ca: fs.readFileSync(caPath),
+        rejectUnauthorized: false,
+    })
+}
+
 module.exports = {
     createDirectoryIfNotExists,
     removeDirectory,
     createFileIfNotExists,
     removeFile,
+    createHttpsAgent,
 }
