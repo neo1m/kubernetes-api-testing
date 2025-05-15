@@ -40,8 +40,36 @@ const nodeData = csrTests.nodeData
 // Для данных spec.groups запрещено создание CSR
 const csrCreationForbiddenUsages = [
   {
-    name: 'empty usages array',
+    name: 'valid usages as one string',
+    usages: ['digital signature client auth'],
+  },
+  {
+    name: 'case mismatch in usages',
+    usages: ['Digital Signature', 'Client Auth'],
+  },
+  {
+    name: 'typo in digital signature',
+    usages: ['digitaal signature', 'client auth'],
+  },
+  {
+    name: 'typo in client auth',
+    usages: ['digital signature', 'client authentication'],
+  },
+  {
+    name: 'duplicates only one valid usage',
+    usages: ['client auth', 'client auth'],
+  },
+  {
+    name: 'empty usages list',
     usages: [],
+  },
+  {
+    name: 'one valid and one misspelled usage',
+    usages: ['digital signature', 'clint auth'],
+  },
+  {
+    name: 'both usages misspelled',
+    usages: ['digitl signatur', 'clint aut'],
   },
 ]
 
@@ -102,40 +130,8 @@ const csrDeniedUsages = [
     ],
   },
   {
-    name: 'valid usages as one string',
-    usages: ['digital signature client auth'],
-  },
-  {
-    name: 'case mismatch in usages',
-    usages: ['Digital Signature', 'Client Auth'],
-  },
-  {
-    name: 'typo in digital signature',
-    usages: ['digitaal signature', 'client auth'],
-  },
-  {
-    name: 'typo in client auth',
-    usages: ['digital signature', 'client authentication'],
-  },
-  {
-    name: 'duplicates only one valid usage',
-    usages: ['client auth', 'client auth'],
-  },
-  {
-    name: 'empty usages list',
-    usages: [],
-  },
-  {
     name: 'unrelated usages and one valid',
     usages: ['client auth', 'server auth'],
-  },
-  {
-    name: 'one valid and one misspelled usage',
-    usages: ['digital signature', 'clint auth'],
-  },
-  {
-    name: 'both usages misspelled',
-    usages: ['digitl signatur', 'clint aut'],
   },
   {
     name: 'valid usages mixed with multiple extras',
@@ -226,9 +222,9 @@ describe('[CSR denied]', () => {
         const body = await res.json()
 
         // Проверки
-        expect(res.status).toBe(403)
+        expect(res.status).toBe(422)
         expect(body.status).toBe('Failure')
-        expect(body.reason).toBe('Forbidden')
+        expect(body.reason).toBe('Invalid')
       })
     })
 

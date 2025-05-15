@@ -49,64 +49,118 @@ const csrCreationForbiddenUsages = [
 // Для данных spec.usages отклоняется созданный CSR
 const csrDeniedUsages = [
   {
-    name: 'only digital signature (missing client auth)',
+    name: 'only digital signature',
     usages: ['digital signature'],
   },
   {
-    name: 'only client auth (missing digital signature)',
-    usages: ['client auth'],
-  },
-  {
-    name: 'usages in reverse order',
-    usages: ['client auth', 'digital signature'],
-  },
-  {
-    name: 'additional usage: key encipherment',
-    usages: ['digital signature', 'client auth', 'key encipherment'],
-  },
-  {
-    name: 'additional usage: server auth',
-    usages: ['digital signature', 'client auth', 'server auth'],
-  },
-  {
-    name: 'missing both required usages',
-    usages: ['server auth', 'key encipherment'],
-  },
-  {
-    name: 'only one usage: server auth',
+    name: 'only server auth',
     usages: ['server auth'],
   },
   {
-    name: 'empty usages array',
-    usages: [],
+    name: 'reverse order of valid usages',
+    usages: ['server auth', 'digital signature'],
   },
   {
-    name: 'duplicate digital signature only',
-    usages: ['digital signature', 'digital signature'],
+    name: 'valid usages plus one extra',
+    usages: ['digital signature', 'server auth', 'client auth'],
   },
   {
-    name: 'duplicate client auth only',
-    usages: ['client auth', 'client auth'],
+    name: 'valid usages plus multiple extras',
+    usages: ['digital signature', 'server auth', 'key encipherment', 'any'],
   },
   {
-    name: 'both usages as one string',
-    usages: ['digital signature client auth'],
+    name: 'client auth instead of server auth',
+    usages: ['digital signature', 'client auth'],
+  },
+  {
+    name: 'server auth with extra unrelated usage',
+    usages: ['server auth', 'code signing'],
+  },
+  {
+    name: 'unrelated usages only',
+    usages: ['email protection', 'cert sign'],
+  },
+  {
+    name: 'all known usages except valid ones',
+    usages: [
+      'signing',
+      'content commitment',
+      'key encipherment',
+      'key agreement',
+      'data encipherment',
+      'cert sign',
+      'crl sign',
+      'encipher only',
+      'decipher only',
+      'any',
+      'client auth',
+      'code signing',
+      'email protection',
+      's/mime',
+      'ipsec end system',
+      'ipsec tunnel',
+      'ipsec user',
+      'timestamping',
+      'ocsp signing',
+      'microsoft sgc',
+      'netscape sgc'
+    ],
+  },
+  {
+    name: 'valid usages as one string',
+    usages: ['digital signature server auth'],
   },
   {
     name: 'case mismatch in usages',
-    usages: ['Digital Signature', 'Client Auth'],
+    usages: ['Digital Signature', 'Server Auth'],
   },
   {
     name: 'typo in digital signature',
-    usages: ['digital signatur', 'client auth'],
+    usages: ['digita1 signature', 'server auth'],
   },
   {
-    name: 'typo in client auth',
-    usages: ['digital signature', 'client authentication'],
+    name: 'typo in server auth',
+    usages: ['digital signature', 'server authorization'],
   },
   {
-    name: 'wrong casing in one usage',
-    usages: ['digital signature', 'Client auth'],
+    name: 'duplicates only one valid usage',
+    usages: ['server auth', 'server auth'],
+  },
+  {
+    name: 'empty usages list',
+    usages: [],
+  },
+  {
+    name: 'unrelated usages and one valid',
+    usages: ['digital signature', 's/mime'],
+  },
+  {
+    name: 'one valid and one misspelled usage',
+    usages: ['digital signature', 'servr auth'],
+  },
+  {
+    name: 'both usages misspelled',
+    usages: ['digitl signatur', 'srver aut'],
+  },
+  {
+    name: 'valid usages mixed with multiple extras',
+    usages: ['digital signature', 'server auth', 'any', 'ocsp signing', 'timestamping'],
+  },
+  {
+    name: 'only microsoft and netscape usages',
+    usages: ['microsoft sgc', 'netscape sgc'],
+  },
+  {
+    name: 'only ipsec usages',
+    usages: ['ipsec end system', 'ipsec tunnel', 'ipsec user'],
+  },
+  {
+    name: 'only timestamping',
+    usages: ['timestamping'],
+  },
+  {
+    name: 'only ocsp signing',
+    usages: ['ocsp signing'],
   },
 ]
 
@@ -184,9 +238,9 @@ describe('[CSR denied]', () => {
         const body = await res.json()
 
         // Проверки
-        expect(res.status).toBe(403)
+        expect(res.status).toBe(422)
         expect(body.status).toBe('Failure')
-        expect(body.reason).toBe('Forbidden')
+        expect(body.reason).toBe('Invalid')
       })
     })
 
