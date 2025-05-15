@@ -41,16 +41,12 @@ const nodeData = csrTests.nodeData
 // Для данных spec.groups запрещено создание CSR
 const csrCreationForbiddenGroups = [
   {
-    name: 'unrelated system group',
-    groups: ['system:bootstrappers'],
+    name: 'empty group list',
+    groups: [],
   },
   {
     name: 'similar group name (system:node)',
     groups: ['system:node'],
-  },
-  {
-    name: 'empty group list',
-    groups: [],
   },
   {
     name: 'typo in group name',
@@ -96,26 +92,6 @@ const csrCreationForbiddenGroups = [
     name: 'undefined in group list',
     groups: [undefined],
   },
-]
-
-// Для данных spec.groups отклоняется созданный CSR
-const csrDeniedGroups = [
-  {
-    name: 'system:nodes + extra group',
-    groups: ['system:nodes', 'extra:group'],
-  },
-  {
-    name: 'unrelated bootstrap groups',
-    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
-    name: 'duplicate system:nodes group',
-    groups: ['system:nodes', 'system:nodes'],
-  },
-  {
-    name: 'system:nodes with system:bootstrappers',
-    groups: ['system:nodes', 'system:bootstrappers'],
-  },
   {
     name: 'system:bootstrappers only',
     groups: ['system:bootstrappers'],
@@ -129,8 +105,16 @@ const csrDeniedGroups = [
     groups: ['system:unauthenticated'],
   },
   {
-    name: 'system:masters only',
-    groups: ['system:masters'],
+    name: 'multiple unrelated controllers',
+    groups: ['system:controller:cronjob-controller', 'system:controller:statefulset-controller'],
+  },
+  {
+    name: 'controller and serviceaccounts mix',
+    groups: ['system:controller:job-controller', 'system:serviceaccounts'],
+  },
+  {
+    name: 'node-controller with serviceaccounts',
+    groups: ['system:controller:node-controller', 'system:serviceaccounts:kube-system'],
   },
   {
     name: 'system:serviceaccounts only',
@@ -156,6 +140,30 @@ const csrDeniedGroups = [
     name: 'system:controller:endpoint-controller only',
     groups: ['system:controller:endpoint-controller'],
   },
+]
+
+// Для данных spec.groups отклоняется созданный CSR
+const csrDeniedGroups = [
+  {
+    name: 'system:nodes + extra group',
+    groups: ['system:nodes', 'extra:group'],
+  },
+  {
+    name: 'unrelated bootstrap groups',
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'duplicate system:nodes group',
+    groups: ['system:nodes', 'system:nodes'],
+  },
+  {
+    name: 'system:nodes with system:bootstrappers',
+    groups: ['system:nodes', 'system:bootstrappers'],
+  },
+  {
+    name: 'system:masters only',
+    groups: ['system:masters'],
+  },
   {
     name: 'system:nodes + system:authenticated',
     groups: ['system:nodes', 'system:authenticated'],
@@ -175,18 +183,6 @@ const csrDeniedGroups = [
   {
     name: 'system:nodes with controller groups',
     groups: ['system:nodes', 'system:controller:replicaset-controller'],
-  },
-  {
-    name: 'multiple unrelated controllers',
-    groups: ['system:controller:cronjob-controller', 'system:controller:statefulset-controller'],
-  },
-  {
-    name: 'controller and serviceaccounts mix',
-    groups: ['system:controller:job-controller', 'system:serviceaccounts'],
-  },
-  {
-    name: 'node-controller with serviceaccounts',
-    groups: ['system:controller:node-controller', 'system:serviceaccounts:kube-system'],
   },
   {
     name: 'system:nodes with lowercase and uppercase variant',
@@ -368,9 +364,7 @@ describe('[CSR denied]', () => {
         const maxRetryTime = 60000
         const retryInterval = 5000
         const startTime = Date.now()
-        let expectedStatus = 'Denied'
-        let lastStatus = ''
-        let body
+        const expectedStatus = 'Denied'
 
         // Цикл запросов
         while (Date.now() - startTime < maxRetryTime) {
@@ -379,8 +373,8 @@ describe('[CSR denied]', () => {
             agent: httpsAgent,
           })
 
-          body = await res.json()
-          lastStatus = body.status?.conditions?.[0]?.type || ''
+          const body = await res.json()
+          const lastStatus = body.status?.conditions?.[0]?.type || ''
 
           if (res.status === 200 && lastStatus === expectedStatus) {
             // Успешный случай
