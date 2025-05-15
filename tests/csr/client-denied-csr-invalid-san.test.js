@@ -65,6 +65,18 @@ const sanList = [
     san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, `DNS:${nodeData.nodeName}`],
   },
   {
+    name: 'san with duplicate entries',
+    san: [`DNS:${nodeData.nodeName}`, `DNS:${nodeData.nodeName}`],
+  },
+  {
+    name: 'san with duplicate external ip entries',
+    san: [`DNS:${nodeData.externalIP}`, `DNS:${nodeData.externalIP}`],
+  },
+  {
+    name: 'san with duplicate internal ip entries',
+    san: [`DNS:${nodeData.internalIP}`, `DNS:${nodeData.internalIP}`],
+  },
+  {
     name: 'san with localhost ip',
     san: ['IP:127.0.0.1'],
   },
@@ -107,10 +119,6 @@ const sanList = [
   {
     name: 'san with otherName',
     san: ['otherName:1.2.3.4;UTF8:user'],
-  },
-  {
-    name: 'san with duplicate entries',
-    san: [`DNS:${nodeData.nodeName}`, `DNS:${nodeData.nodeName}`],
   },
 ]
 
