@@ -38,9 +38,10 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 const csrName = csrTests.serverCSRName
 const nodeData = csrTests.nodeData
 
+// Валидные комбинации данных для одобрения CSR
 const validData = [
   {
-    name: 'correct subject, san and usages',
+    name: 'correct subject (CN, O), san and usages',
     subject: [
       `CN=system:node:${nodeData.nodeName}`,
       `O=system:nodes`,
