@@ -76,7 +76,7 @@ const csrCreationForbiddenGroups = [
     groups: [undefined],
   },
   {
-    name: 'only system:bootstrapers (missing second)',
+    name: 'only one incorrect group with typo (system:bootstrapers)',
     groups: ['system:bootstrapers'],
   },
   {
@@ -85,19 +85,19 @@ const csrCreationForbiddenGroups = [
   },
   {
     name: 'similar but invalid suffix',
-    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-tokenx'],
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-tokenx'],
   },
   {
     name: 'one valid, one random',
-    groups: ['system:bootstrapers', 'dev-team'],
+    groups: ['system:bootstrappers', 'dev-team'],
   },
   {
     name: 'both groups with case mismatch',
     groups: ['System:Bootstrapers', 'System:Bootstrappers:Kubeadm:Default-Node-Token'],
   },
   {
-    name: 'duplicated system:bootstrapers',
-    groups: ['system:bootstrapers', 'system:bootstrapers'],
+    name: 'duplicated system:bootstrappers',
+    groups: ['system:bootstrappers', 'system:bootstrappers'],
   },
   {
     name: 'only unrelated system groups',
@@ -153,15 +153,15 @@ const csrDeniedGroups = [
   },
   {
     name: 'extra group added',
-    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
   },
   {
     name: 'similar but invalid prefix',
-    groups: ['kubeadm:system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token'],
+    groups: ['kubeadm:system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
   },
   {
     name: 'extra controller group',
-    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'system:controller:job-controller'],
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token', 'system:controller:job-controller'],
   },
 ]
 
