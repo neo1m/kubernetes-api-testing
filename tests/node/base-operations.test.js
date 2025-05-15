@@ -42,6 +42,7 @@ describe('[base operations with Node]', () => {
         headers: { 'Content-Type': 'application/json' },
         agent: httpsAgent,
       })
+
       console.log(`[NODE CREATE] Received status "${res.status}"`)
 
       // Проверки
@@ -53,7 +54,26 @@ describe('[base operations with Node]', () => {
     })
 
     test('should contain correct labels', async () => {
+      // Настройка HTTPS агента с mTLS
+      const httpsAgent = createHttpsAgent(kubeAuthFiles.clientCert, kubeAuthFiles.clientKey, kubeAuthFiles.caCrt)
 
+      // Запрос на удаление Node
+      const res = await fetch(`${baseURL}${nodePath}/${nodeName}`, {
+        method: 'GET',
+        agent: httpsAgent,
+      })
+      const body = await res.json()
+
+      console.log(`[NODE CHECK] Received status "${res.status}"`)
+
+      // Проверки
+      expect(body.metadata.name).toBe(nodeName)
+      expect(body.metadata.labels['beta.kubernetes.io/instance-type']).toBe('vps')
+      expect(body.metadata.labels['failure-domain.beta.kubernetes.io/region']).toBe('ru1')
+      expect(body.metadata.labels['failure-domain.beta.kubernetes.io/zone']).toBe('ru1-dc1')
+      expect(body.metadata.labels['node.kubernetes.io/instance-type']).toBe('vps')
+      expect(body.metadata.labels['topology.kubernetes.io/region']).toBe('ru1')
+      expect(body.metadata.labels['topology.kubernetes.io/zone']).toBe('ru1-dc1')
     })
 
     test('should delete node', async () => {
@@ -65,6 +85,7 @@ describe('[base operations with Node]', () => {
         method: 'DELETE',
         agent: httpsAgent,
       })
+
       console.log(`[NODE DELETE] Received status "${res.status}"`)
 
       // Проверки
