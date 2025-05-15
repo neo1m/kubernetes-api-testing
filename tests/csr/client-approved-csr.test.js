@@ -113,6 +113,7 @@ describe('[CSR approved]', () => {
           agent: httpsAgent,
         })
         const body = await res.json()
+        console.log(`[CSR CREATE] Received status "${res.status}"`)
 
         // Проверки
         expect(res.status).toBe(201)
@@ -131,8 +132,8 @@ describe('[CSR approved]', () => {
         // Максимальное время ожидания
         const maxRetryTime = 60000
         const retryInterval = 5000
-        const startTime = Date.now()
         const expectedStatus = 'Approved'
+        const startTime = Date.now()
 
         // Цикл запросов
         while (Date.now() - startTime < maxRetryTime) {
@@ -175,6 +176,7 @@ describe('[CSR approved]', () => {
           agent: httpsAgent,
         })
         const body = await res.json()
+        console.log(`[CSR DELETE] Received status "${res.status}"`)
 
         // Проверки
         expect(res.status).toBe(200)

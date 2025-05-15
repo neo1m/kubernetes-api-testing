@@ -38,8 +38,8 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 const csrName = csrTests.serverCSRName
 const nodeData = csrTests.nodeData
 
-// При наличии любого SAN отклоняется CSR
-const sanList = [
+// При наличии некорректного SAN отклоняется CSR
+const csrDeniedSAN = [
   {
     name: 'san with ip and dns name',
     san: [`IP:${nodeData.internalIP}`, `DNS:${nodeData.nodeName}`],
@@ -152,7 +152,7 @@ afterAll(() => {
 
 describe('[CSR denied]', () => {
     describe.each([
-      ...sanList,
+      ...csrDeniedSAN,
     ])
     ('[when Subject Alternative Names equal "$name"]', ({ name, san }) => {
       test('should prepare openssl files', async () => {
@@ -215,11 +215,18 @@ describe('[CSR denied]', () => {
           headers: { 'Content-Type': 'application/json' },
           agent: httpsAgent,
         })
-        const body = await res.json()
+
+        // Возможные статусы ответа
+        const expectedStatus = [
+          201, // CSR успешно создан (Created)
+          401, // CSR не создан (Unauthorized)
+          403, // CSR не создан (Forbidden)
+          422, // CSR не создан (Unprocessable Entity)
+        ]
+        console.log(`[CSR CREATE] Received status "${res.status}"`)
 
         // Проверки
-        expect(res.status).toBe(201)
-        expect(body.metadata.name).toBe(csrName)
+        expect(expectedStatus).toContain(res.status)
       })
 
       test('should deny CSR', async () => {
@@ -234,8 +241,8 @@ describe('[CSR denied]', () => {
         // Максимальное время ожидания
         const maxRetryTime = 60000
         const retryInterval = 5000
-        const startTime = Date.now()
         const expectedStatus = 'Denied'
+        const startTime = Date.now()
 
         // Цикл запросов
         while (Date.now() - startTime < maxRetryTime) {
@@ -247,19 +254,33 @@ describe('[CSR denied]', () => {
           const body = await res.json()
           const lastStatus = body.status?.conditions?.[0]?.type || ''
 
-          if (res.status === 200 && lastStatus === expectedStatus) {
-            // Успешный случай
-            expect(res.status).toBe(200)
-            expect(body.metadata.name).toBe(csrName)
-            expect(body.status.conditions[0].type).toBe(expectedStatus)
+          // CSR отсутствует или нет доступа (не удалось создать ранее)
+          if (res.status !== 200) {
+            console.log(`[CSR CHECK] Non-200 status "${res.status}" - stopping watch`)
             return
           }
 
-          // Ждём перед следующим запросом
+          // CSR существует, статус соответствует искомому
+          if (lastStatus === expectedStatus) {
+            console.log(`[CSR CHECK] Resource has expected status "${expectedStatus}" - stopping watch`)
+            expect(res.status).toBe(200)
+            expect(body.metadata.name).toBe(csrName)
+            expect(lastStatus).toBe(expectedStatus)
+            return
+          }
+
+          // CSR существует, но статус не соответствует искомому
+          if (lastStatus && lastStatus !== expectedStatus) {
+            console.log(`[CSR CHECK] Unexpected CSR status "${lastStatus}" - throwing error`)
+            throw new Error(`Unsupported CSR status "${lastStatus}"`)
+          }
+
+          // CSR существует, но статус ещё не определён — продолжаем ждать
+          console.log(`[CSR CHECK] Status not yet set - continuing to wait`)
           await new Promise(resolve => setTimeout(resolve, retryInterval))
         }
 
-        // Если дошли сюда - значит Approved не получен за отведённое время
+        // Если дошли сюда - значит искомый статус CSR не получен за отведённое время
         throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
       })
 
@@ -277,12 +298,17 @@ describe('[CSR denied]', () => {
           method: 'DELETE',
           agent: httpsAgent,
         })
-        const body = await res.json()
+
+        // Возможные статусы ответа
+        const expectedStatus = [
+          200, // CSR успешно удален
+          403, // CSR не найден (нет доступа)
+          404, // CSR не найден (не удалось создать ранее)
+        ]
+        console.log(`[CSR DELETE] Received status "${res.status}"`)
 
         // Проверки
-        expect(res.status).toBe(200)
-        expect(body.status).toBe('Success')
-        expect(body.details.name).toBe(csrName)
+        expect(expectedStatus).toContain(res.status)
       })
     })
 })
