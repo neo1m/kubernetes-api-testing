@@ -339,15 +339,31 @@ describe('[CSR denied]', () => {
           const body = await res.json()
           const lastStatus = body.status?.conditions?.[0]?.type || ''
 
+          // CSR отсутствует (не удалось создать ранее)
+          if (res.status === 404) {
+            return
+          }
+
+          // CSR существует, но статус ещё не определён — продолжаем ждать
+          if (res.status === 200 && !lastStatus) {
+            await new Promise(resolve => setTimeout(resolve, retryInterval))
+            continue
+          }
+
+          // CSR существует, статус соответствует искомому
           if (res.status === 200 && lastStatus === expectedStatus) {
-            // Успешный случай
             expect(res.status).toBe(200)
             expect(body.metadata.name).toBe(csrName)
             expect(body.status.conditions[0].type).toBe(expectedStatus)
             return
           }
 
-          // Ждём перед следующим запросом
+          // CSR существует, но статус не соответствует искомому
+          if (res.status === 200 && lastStatus !== expectedStatus) {
+            throw new Error(`Неподдерживаемый статус CSR: ${lastStatus}`)
+          }
+
+          // Ждём перед следующим запросом в остальных случаях (например, неожиданный код ответа)
           await new Promise(resolve => setTimeout(resolve, retryInterval))
         }
 
