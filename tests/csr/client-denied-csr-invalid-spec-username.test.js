@@ -44,8 +44,8 @@ const csrCreationForbiddenCommonNames = [
     cn: ['qwerty123']
   },
   {
-    name: 'bootstrap with client node name',
-    cn: [`system:bootstrap:${nodeData.nodeName}`]
+    name: 'bootstrap with server node name',
+    cn: [`system:node:${nodeData.nodeName}`]
   },
   {
     name: 'system anonymous',
@@ -265,19 +265,19 @@ const csrCreationUnauthorizedCommonNames = [
 const csrDeniedCommonNames = [
   {
     name: 'duplicated valid pattern',
-    cn: [`system:node:${nodeData.nodeName}`, `system:node:${nodeData.nodeName}`]
-  },
-  {
-    name: 'server and random common name',
-    cn: [`system:node:${nodeData.nodeName}`, 'system:node:admin',]
-  },
-  {
-    name: 'server and random common name reversed order',
-    cn: ['system:node:admin', `system:node:${nodeData.nodeName}`]
+    cn: [`system:bootstrap:${nodeData.nodeName}`, `system:bootstrap:${nodeData.nodeName}`]
   },
   {
     name: 'client and random common name',
+    cn: [`system:bootstrap:${nodeData.nodeName}`, 'system:node:admin',]
+  },
+  {
+    name: 'client and random common name reversed order',
     cn: ['system:node:admin', `system:bootstrap:${nodeData.nodeName}`]
+  },
+  {
+    name: 'server and random common name',
+    cn: ['system:node:admin', `system:node:${nodeData.nodeName}`]
   },
   {
     name: 'server and client common name',
