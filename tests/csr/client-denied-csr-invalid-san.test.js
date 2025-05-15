@@ -199,7 +199,7 @@ describe('[CSR denied]', () => {
 
         // Возможные статусы ответа
         const expectedStatus = [
-          201, // CSR успешно создан
+          201, // CSR успешно создан (Created)
           401, // CSR не создан (Unauthorized)
           403, // CSR не создан (Forbidden)
           422, // CSR не создан (Unprocessable Entity)
@@ -261,7 +261,7 @@ describe('[CSR denied]', () => {
           await new Promise(resolve => setTimeout(resolve, retryInterval))
         }
 
-        // Если дошли сюда - значит Approved не получен за отведённое время
+        // Если дошли сюда - значит искомый статус CSR не получен за отведённое время
         throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
       })
 

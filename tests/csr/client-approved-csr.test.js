@@ -156,7 +156,7 @@ describe('[CSR approved]', () => {
           await new Promise(resolve => setTimeout(resolve, retryInterval))
         }
 
-        // Если дошли сюда - значит Approved не получен за отведённое время
+        // Если дошли сюда - значит искомый статус CSR не получен за отведённое время
         throw new Error(`Timeout waiting for CSR "${csrName}" to have status "${expectedStatus}" within ${maxRetryTime / 1000} seconds`)
       })
 
