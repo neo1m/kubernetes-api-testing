@@ -347,17 +347,20 @@ describe('[CSR denied]', () => {
 
           // CSR отсутствует (не удалось создать ранее)
           if (res.status === 404) {
+            console.log(`[CSR CHECK] Resource not found (404) - stopping watch`)
             return
           }
 
           // CSR существует, но статус ещё не определён — продолжаем ждать
           if (res.status === 200 && !lastStatus) {
+            console.log(`[CSR CHECK] Status not yet set - continuing to wait`)
             await new Promise(resolve => setTimeout(resolve, retryInterval))
             continue
           }
 
           // CSR существует, статус соответствует искомому
           if (res.status === 200 && lastStatus === expectedStatus) {
+            console.log(`[CSR CHECK] Resource was denied - stopping watch`)
             expect(res.status).toBe(200)
             expect(body.metadata.name).toBe(csrName)
             expect(body.status.conditions[0].type).toBe(expectedStatus)
@@ -366,10 +369,12 @@ describe('[CSR denied]', () => {
 
           // CSR существует, но статус не соответствует искомому
           if (res.status === 200 && lastStatus !== expectedStatus) {
-            throw new Error(`Неподдерживаемый статус CSR: ${lastStatus}`)
+            console.log(`[CSR CHECK] Unexpected CSR status: ${lastStatus} - throwing error`)
+            throw new Error(`Unsupported CSR status: ${lastStatus}`)
           }
 
           // Ждём перед следующим запросом в остальных случаях (например, неожиданный код ответа)
+          console.log(`[CSR CHECK] Unhandled response status: ${res.status} - continuing to wait`)
           await new Promise(resolve => setTimeout(resolve, retryInterval))
         }
 
