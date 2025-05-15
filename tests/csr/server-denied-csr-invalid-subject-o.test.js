@@ -38,42 +38,80 @@ const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
 const csrName = csrTests.serverCSRName
 const nodeData = csrTests.nodeData
 
-// Массив различных Organization для проверки в тестах
-const specGroups = [
-  // Тестовые идентификаторы
-  'qwerty123',
-  'system:nodesss',
-  'system:unknown',
-  // Привилегированные группы
-  'system:masters',
-  // Группы для нод
-  'system:nodes',
-  // Группы для аутентификации
-  'system:authenticated',
-  'system:unauthenticated',
-  // Группы для bootstrap
-  'system:bootstrappers',
-  'system:bootstrappers:kubeadm:default-node-token',
-  // Группы для Service Accounts
-  'system:serviceaccounts',
-  'system:serviceaccounts:default',
-  // Группы компонентов control-plane
-  'system:kube-controller-manager',
-  'system:kube-scheduler',
-  'system:kube-proxy',
-  // Группы для облачных провайдеров
-  'eks:nodegroup',
-  'gke:security-groups',
-  // Устаревшие группы
-  'system:cluster-admins',
-  // Общие контроллеры
-  'system:controller:node-controller',
-  'system:controller:deployment-controller',
-  'system:controller:endpoint-controller',
-  'system:controller:replicaset-controller',
-  'system:controller:statefulset-controller',
-  'system:controller:job-controller',
-  'system:controller:cronjob-controller',
+// Для данных spec.groups запрещено создание CSR
+const csrCreationForbiddenGroups = [
+  {
+    name: 'unrelated system group',
+    groups: ['system:bootstrappers'],
+  },
+  {
+    name: 'similar group name (system:node)',
+    groups: ['system:node'],
+  },
+  {
+    name: 'empty group list',
+    groups: [],
+  },
+  {
+    name: 'typo in group name',
+    groups: ['system:nodez'],
+  },
+  {
+    name: 'group with prefix',
+    groups: ['extra:system:nodes'],
+  },
+  {
+    name: 'both groups in one string',
+    groups: ['system:nodes system:bootstrappers'],
+  },
+  {
+    name: 'system:nodes with suffix',
+    groups: ['system:nodes:worker'],
+  },
+  {
+    name: 'uppercase group name',
+    groups: ['SYSTEM:NODES'],
+  },
+  {
+    name: 'whitespace-only group',
+    groups: [' '],
+  },
+  {
+    name: 'numeric group name',
+    groups: ['12345'],
+  },
+  {
+    name: 'group with invalid characters',
+    groups: ['system:nodes$', 'admin'],
+  },
+  {
+    name: 'boolean as group name',
+    groups: [true],
+  },
+  {
+    name: 'object instead of string',
+    groups: [{}],
+  },
+  {
+    name: 'undefined in group list',
+    groups: [undefined],
+  },
+]
+
+// Для данных spec.groups отклоняется созданный CSR
+const csrDeniedGroups = [
+  {
+    name: 'system:nodes + extra group',
+    groups: ['system:nodes', 'extra:group'],
+  },
+  {
+    name: 'unrelated bootstrap groups',
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'duplicate system:nodes group',
+    groups: ['system:nodes', 'system:nodes'],
+  },
 ]
 
 beforeAll(() => {
@@ -85,85 +123,93 @@ afterAll(() => {
 })
 
 describe('[CSR denied]', () => {
-  describe('[when Subject Organization in CSR is missing]', () => {
-    test('should prepare openssl files', async () => {
-      // Subject
-      const subject = [
-        `CN=system:node:${nodeData.nodeName}`,
-      ]
-
-      // Subject Alternative Names
-      const sanList = [
-        `IP:${nodeData.externalIP}`,
-        `IP:${nodeData.internalIP}`,
-      ]
-
-      // Генерируем ключи, конфиги, CSR и сертификат для клиента
-      generateKeys(testFiles.privateKey, testFiles.publicKey)
-      createExtFile(testFiles.ext, sanList)
-      generateCSR(testFiles.privateKey, testFiles.csr, subject, sanList)
-      signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey, testFiles.ext)
-
-      // Проверки
-      expect(fs.existsSync(testFiles.privateKey)).toBe(true)
-      expect(fs.existsSync(testFiles.publicKey)).toBe(true)
-      expect(fs.existsSync(testFiles.ext)).toBe(true)
-      expect(fs.existsSync(testFiles.csr)).toBe(true)
-      expect(fs.existsSync(testFiles.crt)).toBe(true)
-    })
-
-    test('should not create CSR', async () => {
-      // Настройка HTTPS агента с mTLS
-      const httpsAgent = new https.Agent({
-        cert: fs.readFileSync(testFiles.crt),
-        key: fs.readFileSync(testFiles.privateKey),
-        ca: fs.readFileSync(kubeAuthFiles.caCrt),
-        rejectUnauthorized: false,
-      })
-
-      // CSR в формате base64
-      const base64CSR = encodeCSRToBase64(testFiles.csr)
-
-      // API тело запроса
-      const certificateSigningRequest = {
-        apiVersion: "certificates.k8s.io/v1",
-        kind: "CertificateSigningRequest",
-        metadata: {
-          name: csrName
-        },
-        spec: {
-          request: base64CSR,
-          signerName: "kubernetes.io/kubelet-serving",
-          usages: [
-            "digital signature",
-            "server auth"
-          ],
-        }
-      }
-
-      // Запрос
-      const res = await fetch(`${baseURL}${csrPath}`, {
-        method: 'POST',
-        body: JSON.stringify(certificateSigningRequest),
-        headers: { 'Content-Type': 'application/json' },
-        agent: httpsAgent,
-      })
-      const body = await res.json()
-
-      // Проверки
-      expect(res.status).toBe(403)
-      expect(body.status).toBe('Failure')
-      expect(body.reason).toBe('Forbidden')
-    })
-  })
-
-  describe.each(specGroups)
-    ('[when Subject Common Name in CSR equal "%s"]', (specGroup) => {
+  describe.each(csrCreationForbiddenGroups)
+    ('[when Subject Organization in CSR equal "$name"]', ({ name, groups }) => {
       test('should prepare openssl files', async () => {
+        // Преобразуем массив к формату для генерации CSR
+        const formatGroups = groups.map((group) => `O=${group}`)
+
         // Subject
         const subject = [
           `CN=system:node:${nodeData.nodeName}`,
-          `O=${specGroup}`,
+          ...formatGroups,
+        ]
+
+        // Subject Alternative Names
+        const sanList = [
+          `IP:${nodeData.externalIP}`,
+          `IP:${nodeData.internalIP}`,
+        ]
+
+        // Генерируем ключи, конфиги, CSR и сертификат для клиента
+        generateKeys(testFiles.privateKey, testFiles.publicKey)
+        createExtFile(testFiles.ext, sanList)
+        generateCSR(testFiles.privateKey, testFiles.csr, subject, sanList)
+        signCertificate(testFiles.csr, testFiles.crt, kubeAuthFiles.caCrt, kubeAuthFiles.caKey, testFiles.ext)
+
+        // Проверки
+        expect(fs.existsSync(testFiles.privateKey)).toBe(true)
+        expect(fs.existsSync(testFiles.publicKey)).toBe(true)
+        expect(fs.existsSync(testFiles.ext)).toBe(true)
+        expect(fs.existsSync(testFiles.csr)).toBe(true)
+        expect(fs.existsSync(testFiles.crt)).toBe(true)
+      })
+
+      test('should not create CSR', async () => {
+        // Настройка HTTPS агента с mTLS
+        const httpsAgent = new https.Agent({
+          cert: fs.readFileSync(testFiles.crt),
+          key: fs.readFileSync(testFiles.privateKey),
+          ca: fs.readFileSync(kubeAuthFiles.caCrt),
+          rejectUnauthorized: false,
+        })
+
+        // CSR в формате base64
+        const base64CSR = encodeCSRToBase64(testFiles.csr)
+
+        // API тело запроса
+        const certificateSigningRequest = {
+          apiVersion: "certificates.k8s.io/v1",
+          kind: "CertificateSigningRequest",
+          metadata: {
+            name: csrName
+          },
+          spec: {
+            request: base64CSR,
+            signerName: "kubernetes.io/kubelet-serving",
+            usages: [
+              "digital signature",
+              "server auth"
+            ],
+          }
+        }
+
+        // Запрос
+        const res = await fetch(`${baseURL}${csrPath}`, {
+          method: 'POST',
+          body: JSON.stringify(certificateSigningRequest),
+          headers: { 'Content-Type': 'application/json' },
+          agent: httpsAgent,
+        })
+        const body = await res.json()
+
+        // Проверки
+        expect(res.status).toBe(403)
+        expect(body.status).toBe('Failure')
+        expect(body.reason).toBe('Forbidden')
+      })
+    })
+
+  describe.each(csrDeniedGroups)
+    ('[when Subject Common Name in CSR equal "$name"]', ({ name, groups }) => {
+      test('should prepare openssl files', async () => {
+        // Преобразуем массив к формату для генерации CSR
+        const formatGroups = groups.map((group) => `O=${group}`)
+
+        // Subject
+        const subject = [
+          `CN=system:node:${nodeData.nodeName}`,
+          ...formatGroups,
         ]
 
         // Subject Alternative Names

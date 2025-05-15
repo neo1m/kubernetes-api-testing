@@ -67,6 +67,18 @@ const csrCreationForbiddenGroups = [
     name: 'random groups',
     groups: ['devs', 'qa'],
   },
+  {
+    name: 'boolean as group name',
+    groups: [true],
+  },
+  {
+    name: 'object instead of string',
+    groups: [{}],
+  },
+  {
+    name: 'undefined in group list',
+    groups: [undefined],
+  },
 ]
 
 // Для данных spec.groups отклоняется созданный CSR
