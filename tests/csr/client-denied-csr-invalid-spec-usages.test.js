@@ -164,7 +164,9 @@ afterAll(() => {
 })
 
 describe('[CSR denied]', () => {
-  describe.each(csrCreationForbiddenUsages)
+  describe.each([
+    ...csrCreationForbiddenUsages,
+  ])
     ('[when spec.usages equal "$name"]', ({ name, usages }) => {
       test('should prepare openssl files', async () => {
         // Subject
@@ -228,7 +230,9 @@ describe('[CSR denied]', () => {
       })
     })
 
-  describe.each(csrDeniedUsages)
+  describe.each([
+    ...csrDeniedUsages,
+  ])
     ('[when spec.usages equal "$name"]', ({ name, usages }) => {
       test('should prepare openssl files', async () => {
         // Subject

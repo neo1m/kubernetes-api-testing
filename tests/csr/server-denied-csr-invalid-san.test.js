@@ -151,7 +151,9 @@ afterAll(() => {
 })
 
 describe('[CSR denied]', () => {
-    describe.each(sanList)
+    describe.each([
+      ...sanList,
+    ])
     ('[when Subject Alternative Names equal "$name"]', ({ name, san }) => {
       test('should prepare openssl files', async () => {
         // Subject

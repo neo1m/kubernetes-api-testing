@@ -59,7 +59,9 @@ afterAll(() => {
 })
 
 describe('[CSR approved]', () => {
-  describe.each(validData)
+  describe.each([
+    ...validData,
+  ])
     ('[when CSR data and API request equal "$name"]', ({ name, subject, usages }) => {
       test('should prepare openssl files', async () => {
         // Subject

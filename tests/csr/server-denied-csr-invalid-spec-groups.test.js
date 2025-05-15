@@ -199,7 +199,9 @@ afterAll(() => {
 })
 
 describe('[CSR denied]', () => {
-  describe.each(csrCreationForbiddenGroups)
+  describe.each([
+    ...csrCreationForbiddenGroups,
+  ])
     ('[when Subject Organization in CSR equal "$name"]', ({ name, groups }) => {
       test('should prepare openssl files', async () => {
         // Преобразуем массив к формату для генерации CSR
@@ -276,7 +278,9 @@ describe('[CSR denied]', () => {
       })
     })
 
-  describe.each(csrDeniedGroups)
+  describe.each([
+    ...csrDeniedGroups,
+  ])
     ('[when Subject Common Name in CSR equal "$name"]', ({ name, groups }) => {
       test('should prepare openssl files', async () => {
         // Преобразуем массив к формату для генерации CSR
