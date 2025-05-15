@@ -131,9 +131,7 @@ describe('[CSR approved]', () => {
       const maxRetryTime = 60000
       const retryInterval = 5000
       const startTime = Date.now()
-      let expectedStatus = 'Approved'
-      let lastStatus = ''
-      let body
+      const expectedStatus = 'Approved'
 
       // Цикл запросов
       while (Date.now() - startTime < maxRetryTime) {
@@ -142,8 +140,8 @@ describe('[CSR approved]', () => {
           agent: httpsAgent,
         })
 
-        body = await res.json()
-        lastStatus = body.status?.conditions?.[0]?.type || ''
+        const body = await res.json()
+        const lastStatus = body.status?.conditions?.[0]?.type || ''
 
         if (res.status === 200 && lastStatus === expectedStatus) {
           // Успешный случай

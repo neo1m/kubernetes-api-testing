@@ -95,7 +95,7 @@ describe('[CSR denied]', () => {
     test('should prepare openssl files', async () => {
       // Subject
       const subject = [
-        `O=system:bootstrapers`,
+        `O=system:bootstrappers`,
         `O=system:bootstrappers:kubeadm:default-node-token`,
       ]
 
@@ -161,7 +161,7 @@ describe('[CSR denied]', () => {
       // Subject
       const subject = [
         `CN=${commonName}`,
-        `O=system:bootstrapers`,
+        `O=system:bootstrappers`,
         `O=system:bootstrappers:kubeadm:default-node-token`,
       ]
 
@@ -233,9 +233,7 @@ describe('[CSR denied]', () => {
       const maxRetryTime = 60000
       const retryInterval = 5000
       const startTime = Date.now()
-      let expectedStatus = 'Denied'
-      let lastStatus = ''
-      let body
+      const expectedStatus = 'Denied'
 
       // Цикл запросов
       while (Date.now() - startTime < maxRetryTime) {
@@ -244,8 +242,8 @@ describe('[CSR denied]', () => {
           agent: httpsAgent,
         })
 
-        body = await res.json()
-        lastStatus = body.status?.conditions?.[0]?.type || ''
+        const body = await res.json()
+        const lastStatus = body.status?.conditions?.[0]?.type || ''
 
         if (res.status === 200 && lastStatus === expectedStatus) {
           // Успешный случай
