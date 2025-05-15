@@ -230,7 +230,7 @@ describe('[CSR denied]', () => {
           }
         }
 
-        // Запрос
+        // Запрос на создание CSR
         const res = await fetch(`${baseURL}${csrPath}`, {
           method: 'POST',
           body: JSON.stringify(certificateSigningRequest),
@@ -315,7 +315,7 @@ describe('[CSR denied]', () => {
           rejectUnauthorized: false,
         })
 
-        // Запрос на удаление
+        // Запрос на удаление CSR
         const res = await fetch(`${baseURL}${csrPath}/${csrName}`, {
           method: 'DELETE',
           agent: httpsAgent,
