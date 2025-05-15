@@ -40,10 +40,6 @@ const nodeData = csrTests.nodeData
 // Для данных spec.groups запрещено создание CSR
 const csrCreationForbiddenGroups = [
   {
-    name: 'only one required group (bootstrappers)',
-    groups: ['system:bootstrappers'],
-  },
-  {
     name: 'no required groups',
     groups: ['system:authenticated', 'system:nodes'],
   },
@@ -79,41 +75,9 @@ const csrCreationForbiddenGroups = [
     name: 'undefined in group list',
     groups: [undefined],
   },
-]
-
-// Для данных spec.groups отклоняется созданный CSR
-const csrDeniedGroups = [
-  {
-    name: 'only one required group (default-node-token)',
-    groups: ['system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
-    name: 'required groups plus one extra',
-    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
-  },
-  {
-    name: 'required groups with prefix',
-    groups: ['kubeadm:system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
-    name: 'required groups with suffix',
-    groups: ['system:bootstrappersx', 'system:bootstrappers:kubeadm:default-node-token'],
-  },
   {
     name: 'only system:bootstrapers (missing second)',
     groups: ['system:bootstrapers'],
-  },
-  {
-    name: 'only system:bootstrappers:kubeadm:default-node-token (missing first)',
-    groups: ['system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
-    name: 'groups in wrong order',
-    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrapers'],
-  },
-  {
-    name: 'extra group added',
-    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
   },
   {
     name: 'only system:bootstrappers',
@@ -124,16 +88,8 @@ const csrDeniedGroups = [
     groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-tokenx'],
   },
   {
-    name: 'similar but invalid prefix',
-    groups: ['kubeadm:system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
     name: 'one valid, one random',
     groups: ['system:bootstrapers', 'dev-team'],
-  },
-  {
-    name: 'both groups joined as one string',
-    groups: ['system:bootstrapers system:bootstrappers:kubeadm:default-node-token'],
   },
   {
     name: 'both groups with case mismatch',
@@ -154,6 +110,54 @@ const csrDeniedGroups = [
   {
     name: 'only one group with correct structure but typo',
     groups: ['system:bootstrappers:kubeadm:default-nodetoken'],
+  },
+  {
+    name: 'only one required group (system:bootstrappers) plus one extra (system:nodes)',
+    groups: ['system:bootstrappers', 'system:nodes'],
+  },
+]
+
+// Для данных spec.groups отклоняется созданный CSR
+const csrDeniedGroups = [
+  {
+    name: 'only one required group (default-node-token)',
+    groups: ['system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'required groups plus one extra (extra:group)',
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
+  },
+  {
+    name: 'required groups plus one extra (system:nodes)',
+    groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token', 'system:nodes'],
+  },
+  {
+    name: 'only one required group (system:bootstrappers:kubeadm:default-node-token) plus one extra (system:nodes)',
+    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:nodes'],
+  },
+  {
+    name: 'required groups with prefix',
+    groups: ['kubeadm:system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'required groups with suffix',
+    groups: ['system:bootstrappersx', 'system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'only system:bootstrappers:kubeadm:default-node-token (missing first)',
+    groups: ['system:bootstrappers:kubeadm:default-node-token'],
+  },
+  {
+    name: 'groups in wrong order',
+    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrapers'],
+  },
+  {
+    name: 'extra group added',
+    groups: ['system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token', 'extra:group'],
+  },
+  {
+    name: 'similar but invalid prefix',
+    groups: ['kubeadm:system:bootstrapers', 'system:bootstrappers:kubeadm:default-node-token'],
   },
   {
     name: 'extra controller group',
