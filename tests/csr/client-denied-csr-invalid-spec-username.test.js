@@ -103,6 +103,10 @@ const csrCreationForbiddenCommonNames = [
     cn: ['system:node-problem-detector']
   },
   {
+    name: 'node node admin',
+    cn: ['system:node:admin']
+  },
+  {
     name: 'admin',
     cn: ['admin']
   },
@@ -269,6 +273,10 @@ const csrDeniedCommonNames = [
   {
     name: 'duplicated valid pattern',
     cn: [`system:bootstrap:${nodeData.nodeName}`, `system:bootstrap:${nodeData.nodeName}`]
+  },
+  {
+    name: 'duplicated invalid pattern',
+    cn: [`system:node:${nodeData.nodeName}`, `system:node:${nodeData.nodeName}`]
   },
   {
     name: 'client and random common name',
