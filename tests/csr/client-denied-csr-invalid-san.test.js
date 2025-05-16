@@ -182,7 +182,7 @@ describe('[CSR denied]', () => {
             signerName: "kubernetes.io/kube-apiserver-client-kubelet",
             usages: [
               "digital signature",
-              "client auth"
+              "client auth",
             ],
           }
         }
