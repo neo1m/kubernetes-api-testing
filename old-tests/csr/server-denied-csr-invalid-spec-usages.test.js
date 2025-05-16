@@ -2,7 +2,7 @@ const { createCSR, deleteCSR, getCSRList } = require('#helpers/csrHelpers.js')
 const { waitForCSRStatus } = require('#helpers/waitForCSRApproval.js')
 const { generateCSR } = require('#helpers/generateCSR.js')
 const { serverCSR } = require('#helpers/csrTemplates.js')
-const { csrTests } = require('#fixtures/testData.js')
+const { csrTests } = require('#fixtures/common-test-data.js')
 
 const { nodeName, externalIP, internalIP } = csrTests.nodeData
 const { serverCSRName } = csrTests

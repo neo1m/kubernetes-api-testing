@@ -4,7 +4,7 @@ const fetch = require('node-fetch')
 const { kubeAuthFiles, kube } = require('#root/config.js')
 
 // Тестовые данные
-const { nodeTests } = require('#fixtures/testData.js')
+const { nodeTests } = require('#fixtures/common-test-data.js')
 
 // Вспомогательные методы
 const {

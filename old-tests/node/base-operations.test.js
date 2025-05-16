@@ -1,7 +1,7 @@
 const { createNode, getNode, deleteNode } = require('#helpers/nodeHelpers.js')
 const { waitForNodeReadiness } = require('#helpers/waitForNodeReadiness.js')
 const { nodeManifest } = require('#helpers/nodeTemplates.js')
-const { nodeTests } = require('#fixtures/testData.js')
+const { nodeTests } = require('#fixtures/common-test-data.js')
 
 const { nodeName } = nodeTests.nodeData
 
