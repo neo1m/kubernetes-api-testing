@@ -87,6 +87,10 @@ const csrCreationForbiddenGroups = [
     groups: ['system:bootstrappers'],
   },
   {
+    name: 'only system:masters',
+    groups: ['system:masters'],
+  },
+  {
     name: 'similar but invalid suffix',
     groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-tokenx'],
   },
