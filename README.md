@@ -22,3 +22,16 @@
   - `npm run test:csr`
 - запустить конкретный тест (указываем относительный путь к файлу с тестами)
   - `npm run test -- --testPathPattern=csr/client-approved-csr.test.js`
+
+# Результаты тестирования
+
+- по умолчанию в консоль логируются все выполняемые тесты
+- после тестового прогона отображается краткая статистика по выполненным тестам
+```
+Test Suites: 6 failed, 9 passed, 15 total
+Tests:       36 failed, 1312 passed, 1348 total
+Snapshots:   0 total
+Time:        107.157 s
+Ran all test suites.
+```
+- для визуального анализа результатов генерируется отчет `test-report.html`, который можно посмотреть в браузере

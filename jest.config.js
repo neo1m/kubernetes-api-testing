@@ -18,4 +18,14 @@ module.exports = {
     ".*\\.skip\\.test\\.js$", // Игнорируем файлы с суффиксом .skip.test.js
     ".*disabled.*\\.test\\.js$", // Игнорировать файлы с "disabled" в имени
   ],
+
+  // Репортеры
+  reporters: [
+    "default", // Оставляем стандартный репортер
+    ["jest-html-reporters", {
+      filename: "test-report.html", // Путь к HTML-файлу
+      pageTitle: "Test Report", // Заголовок страницы
+      includeFailureMsg: true, // Включить сообщения об ошибках
+    }]
+  ],
 }
