@@ -41,15 +41,42 @@ const csrName = csrTests.clientCSRName
 const nodeData = csrTests.nodeData
 
 // Валидные комбинации данных для одобрения CSR
-const validData = [
+const csrCombinations = [
   {
-    name: 'correct subject (CN, O) and usages',
+    name: 'Subject: CN first, Usages: digital signature first',
     subject: [
       `CN=system:bootstrap:${nodeData.nodeName}`,
       `O=system:bootstrappers`,
       `O=system:bootstrappers:kubeadm:default-node-token`,
     ],
-    usages: ["digital signature", "client auth"]
+    usages: [
+      "digital signature",
+      "client auth",
+    ]
+  },
+  {
+    name: 'Subject: O first, Usages: client auth first',
+    subject: [
+      `O=system:bootstrappers`,
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      `O=system:bootstrappers:kubeadm:default-node-token`,
+    ],
+    usages: [
+      "client auth",
+      "digital signature",
+    ]
+  },
+  {
+    name: 'Subject: O first with token group, Usages: client auth first',
+    subject: [
+      `O=system:bootstrappers`,
+      `O=system:bootstrappers:kubeadm:default-node-token`,
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+    ],
+    usages: [
+      "client auth",
+      "digital signature",
+    ]
   },
 ]
 
@@ -63,7 +90,7 @@ afterAll(() => {
 
 describe('[CSR approved]', () => {
   describe.each([
-    ...validData,
+    ...csrCombinations,
   ])
     ('[when CSR data and API request equal "$name"]', ({ name, subject, usages }) => {
       test('should prepare openssl files', async () => {

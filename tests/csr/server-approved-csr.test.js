@@ -42,9 +42,9 @@ const csrName = csrTests.serverCSRName
 const nodeData = csrTests.nodeData
 
 // Валидные комбинации данных для одобрения CSR
-const validData = [
+const csrCombinations = [
   {
-    name: 'correct subject (CN, O), san and usages',
+    name: 'Subject: CN first, SAN with external and internal IPs, Usages: digital signature first',
     subject: [
       `CN=system:node:${nodeData.nodeName}`,
       `O=system:nodes`,
@@ -53,7 +53,40 @@ const validData = [
       `IP:${nodeData.externalIP}`,
       `IP:${nodeData.internalIP}`,
     ],
-    usages: ["digital signature", "server auth"]
+    usages: [
+      "digital signature",
+      "server auth",
+    ]
+  },
+  {
+    name: 'Subject: O first, SAN with external and internal IPs, Usages: digital signature first',
+    subject: [
+      `O=system:nodes`,
+      `CN=system:node:${nodeData.nodeName}`,
+    ],
+    san: [
+      `IP:${nodeData.externalIP}`,
+      `IP:${nodeData.internalIP}`,
+    ],
+    usages: [
+      "digital signature",
+      "server auth",
+    ]
+  },
+  {
+    name: 'Subject: O first, SAN with external and internal IPs, Usages: server auth first',
+    subject: [
+      `O=system:nodes`,
+      `CN=system:node:${nodeData.nodeName}`,
+    ],
+    san: [
+      `IP:${nodeData.externalIP}`,
+      `IP:${nodeData.internalIP}`,
+    ],
+    usages: [
+      "server auth",
+      "digital signature",
+    ]
   },
 ]
 
@@ -67,7 +100,7 @@ afterAll(() => {
 
 describe('[CSR approved]', () => {
   describe.each([
-    ...validData,
+    ...csrCombinations,
   ])
     ('[when CSR data and API request equal "$name"]', ({ name, subject, san, usages }) => {
       test('should prepare openssl files', async () => {
