@@ -310,11 +310,14 @@ describe('[CSR denied]', () => {
     ...csrCreationUnauthorizedCommonNames,
     ...csrDeniedCommonNames,
   ])
-    ('[when Subject Common Name in CSR equal "%s"]', (commonName) => {
+    ('[when Subject Common Name in CSR equal "$name"]', ({ name, cn }) => {
       test('should prepare openssl files', async () => {
+        // Преобразуем массив к формату для генерации CSR
+        const formatCommonNames = cn.map((name) => `CN=${name}`)
+
         // Subject
         const subject = [
-          `CN=${commonName}`,
+          ...formatCommonNames,
           `O=system:bootstrappers`,
           `O=system:bootstrappers:kubeadm:default-node-token`,
         ]
@@ -350,7 +353,7 @@ describe('[CSR denied]', () => {
             signerName: "kubernetes.io/kube-apiserver-client-kubelet",
             usages: [
               "digital signature",
-              "client auth"
+              "client auth",
             ],
           }
         }
