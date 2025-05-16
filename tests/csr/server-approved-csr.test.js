@@ -180,11 +180,24 @@ describe('[CSR approved]', () => {
           const body = await res.json()
           const lastStatus = body.status?.conditions?.[0]?.type || ''
 
-          if (res.status === 200 && lastStatus === expectedStatus) {
-            // Успешный случай
+          // CSR отсутствует или нет доступа (не удалось создать ранее)
+          if (res.status !== 200) {
+            console.log(`[CSR CHECK] Non-200 status "${res.status}" - throwing error`)
+            throw new Error(`Unexpected status "${res.status}"`)
+          }
+
+          // CSR существует, но статус не соответствует искомому
+          if (lastStatus && lastStatus !== expectedStatus) {
+            console.log(`[CSR CHECK] Unexpected CSR status "${lastStatus}" - throwing error`)
+            throw new Error(`Unexpected CSR status "${lastStatus}"`)
+          }
+
+          // CSR существует, статус соответствует искомому
+          if (lastStatus === expectedStatus) {
+            console.log(`[CSR CHECK] Resource has expected status "${expectedStatus}" - stopping watch`)
             expect(res.status).toBe(200)
             expect(body.metadata.name).toBe(csrName)
-            expect(body.status.conditions[0].type).toBe(expectedStatus)
+            expect(lastStatus).toBe(expectedStatus)
             return
           }
 
