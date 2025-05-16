@@ -312,6 +312,32 @@ afterAll(() => {
   removeDirectory(outputDir)
 })
 
+/**
+ * Требования к проверке клиентского запроса на подпись сертификата (CSR):
+ *
+ * 1. Subject (предмет сертификата):
+ *    - O (Организация) должно содержать только:
+ *        • "system:bootstrappers"
+ *        • "system:bootstrappers:kubeadm:default-node-token"
+ *        • "system:authenticated"
+ *
+ *    - CN (Общее имя) должно соответствовать шаблону: "system:bootstrap:<machineName>"
+ *
+ * 2. Альтернативные имена (X509v3 Subject Alternative Name):
+ *    - У клиентских сертификатов не должно быть SAN (Subject Alternative Names)
+ *
+ * 3. Поля в CertificateSigningRequest.spec:
+ *    - groups должны содержать только:
+ *        • "system:bootstrappers"
+ *        • "system:bootstrappers:kubeadm:default-node-token"
+ *        • "system:authenticated"
+ *
+ *    - usages должны содержать только:
+ *        • "digital signature"
+ *        • "client auth"
+ *
+ *    - username должен соответствовать шаблону: "system:bootstrap:<machineName>"
+ */
 describe('[CSR denied]', () => {
   describe.each([
     ...csrCreationForbiddenCommonNames,
