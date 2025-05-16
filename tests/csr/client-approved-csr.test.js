@@ -69,8 +69,8 @@ const csrCombinations = [
   {
     name: 'Subject: O first with token group, Usages: client auth first',
     subject: [
-      `O=system:bootstrappers`,
       `O=system:bootstrappers:kubeadm:default-node-token`,
+      `O=system:bootstrappers`,
       `CN=system:bootstrap:${nodeData.nodeName}`,
     ],
     usages: [
