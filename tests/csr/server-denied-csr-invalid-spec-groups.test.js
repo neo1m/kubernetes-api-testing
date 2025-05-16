@@ -152,6 +152,10 @@ const csrDeniedGroups = [
     groups: ['system:nodes', 'extra:group'],
   },
   {
+    name: 'required groups plus one extra (system:masters)',
+    groups: ['system:nodes', 'system:masters'],
+  },
+  {
     name: 'unrelated bootstrap groups',
     groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
   },
