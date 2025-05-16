@@ -1,6 +1,9 @@
 const path = require('path')
 const os = require('os')
 
+const kubeHost = require('child_process').execSync('minikube ip').toString().trim()
+const kubePort = 8443
+
 module.exports = {
   // директория для временных файлов во время тестов
   outputDir: path.resolve(__dirname, 'fixtures', 'tmp'),
@@ -13,7 +16,7 @@ module.exports = {
   },
   // общие данные для kubernetes API
   kube: {
-    host: require('child_process').execSync('minikube ip').toString().trim(),
-    port: 8443,
+    host: kubeHost,
+    port: kubePort,
   }
 }
