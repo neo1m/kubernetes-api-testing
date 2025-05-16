@@ -81,6 +81,7 @@ describe('[base operations with Node]', () => {
           expect(res.status).toBe(200)
           expect(externalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
           expect(internalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
+          expect(externalIP).not.toBe(internalIP)
           return
         }
 
