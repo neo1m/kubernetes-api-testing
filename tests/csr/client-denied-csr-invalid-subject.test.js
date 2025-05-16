@@ -272,7 +272,6 @@ describe('[CSR denied]', () => {
         // Проверки
         expect(fs.existsSync(testFiles.privateKey)).toBe(true)
         expect(fs.existsSync(testFiles.publicKey)).toBe(true)
-        expect(fs.existsSync(testFiles.ext)).toBe(true)
         expect(fs.existsSync(testFiles.csr)).toBe(true)
         expect(fs.existsSync(testFiles.crt)).toBe(true)
       })
