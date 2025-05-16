@@ -15,6 +15,5 @@ module.exports = {
   kube: {
     host: require('child_process').execSync('minikube ip').toString().trim(),
     port: 8443,
-    csrPath: '/apis/certificates.k8s.io/v1/certificatesigningrequests',
   }
 }
