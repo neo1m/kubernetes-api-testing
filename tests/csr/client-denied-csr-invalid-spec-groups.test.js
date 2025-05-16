@@ -287,7 +287,7 @@ describe('[CSR denied]', () => {
           // CSR существует, но статус не соответствует искомому
           if (lastStatus && lastStatus !== expectedStatus) {
             console.log(`[CSR CHECK] Unexpected CSR status "${lastStatus}" - throwing error`)
-            throw new Error(`Unsupported CSR status "${lastStatus}"`)
+            throw new Error(`Unexpected CSR status "${lastStatus}"`)
           }
 
           // CSR существует, но статус ещё не определён — продолжаем ждать
