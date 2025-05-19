@@ -7,9 +7,7 @@ const { kubeAuthFiles, kube } = require('#root/config.js')
 const { nodeTests } = require('#fixtures/common-test-data.js')
 
 // Вспомогательные методы
-const {
-  createHttpsAgent,
-} = require('#helpers/common.js')
+const { createHttpsAgent } = require('#helpers/common.js')
 
 // Адрес API
 const baseURL = `https://${kube.host}:${kube.port}`
