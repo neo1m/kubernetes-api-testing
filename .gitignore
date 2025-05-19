@@ -1,1 +1,3 @@
 node_modules/
+jest-html-reporters-attach/
+test-report.html
