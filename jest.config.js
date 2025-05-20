@@ -9,7 +9,7 @@ module.exports = {
   maxWorkers: 1,
 
   // Вспомогательный код для тестов
-  setupFilesAfterEnv: ['./jest.setup.js'],
+  setupFilesAfterEnv: ["./jest.setup.js"],
 
   // Игнорирование файлов и директорий
   testPathIgnorePatterns: [
