@@ -2,13 +2,10 @@
   "dependencies": {
     "jest": "^29.7.0",
     "jest-html-reporters": "^3.1.7",
-    "node-fetch": "^2.7.0",
-    "node-forge": "^1.3.1"
+    "node-fetch": "^2.7.0"
   },
   "scripts": {
-    "test": "jest",
-    "test:csr": "jest --testPathPattern=tests/csr/",
-    "test:node": "jest --testPathPattern=tests/node/"
+    "test": "jest"
   },
   "imports": {
     "#fixtures/": "./fixtures/",
