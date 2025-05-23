@@ -77,8 +77,8 @@ describe('[base operations with Node]', () => {
           console.log(`[NODE CHECK] Node IPs → Internal: ${internalIP}, External: ${externalIP} - stopping watch`)
           // Проверки
           expect(res.status).toBe(200)
-          expect(externalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
-          expect(internalIP.address).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
+          expect(externalIP).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
+          expect(internalIP).toMatch(/^\d+\.\d+\.\d+\.\d+$/)
           expect(externalIP).not.toBe(internalIP)
           return
         }
