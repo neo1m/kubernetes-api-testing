@@ -23,7 +23,8 @@ module.exports = {
   reporters: [
     "default", // Оставляем стандартный репортер
     ["jest-html-reporters", {
-      filename: "test-report.html", // Путь к HTML-файлу
+      publicPath: "./html-report", // Путь к HTML-файлу
+      filename: "test-report.html", // Название HTML-файла
       pageTitle: "Test Report", // Заголовок страницы
       includeFailureMsg: true, // Включить сообщения об ошибках
     }]
