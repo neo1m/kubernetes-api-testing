@@ -107,6 +107,7 @@ describe('[base operations with Node]', () => {
 
       // Проверки
       expect(body.metadata.name).toBe(nodeName)
+      expect(body.metadata.labels).toBeDefined()
       expect(body.metadata.labels['beta.kubernetes.io/instance-type']).toBe('vps')
       expect(body.metadata.labels['failure-domain.beta.kubernetes.io/region']).toBe('ru1')
       expect(body.metadata.labels['failure-domain.beta.kubernetes.io/zone']).toBe('ru1-dc1')
