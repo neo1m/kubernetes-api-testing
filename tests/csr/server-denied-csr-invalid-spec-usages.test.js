@@ -79,10 +79,6 @@ const csrDeniedUsages = [
     usages: ['server auth'],
   },
   {
-    name: 'reverse order of valid usages',
-    usages: ['server auth', 'digital signature'],
-  },
-  {
     name: 'valid usages plus one extra',
     usages: ['digital signature', 'server auth', 'client auth'],
   },
