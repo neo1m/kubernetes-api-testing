@@ -23,15 +23,6 @@ const {
   signCertificate,
 } = require('#helpers/openssl.js')
 
-// Пути к временным файлам
-const testFiles = {
-  privateKey: path.join(outputDir, 'client.key'),
-  publicKey: path.join(outputDir, 'client.pub'),
-  csr: path.join(outputDir, 'client.csr'),
-  ext: path.join(outputDir, 'v3.ext'),
-  crt: path.join(outputDir, 'client.crt')
-}
-
 // Адрес API
 const baseURL = `https://${kube.host}:${kube.port}`
 const csrPath = '/apis/certificates.k8s.io/v1/certificatesigningrequests'
@@ -308,10 +299,6 @@ beforeAll(() => {
   createDirectoryIfNotExists(outputDir)
 })
 
-afterAll(() => {
-  removeDirectory(outputDir)
-})
-
 describe('[CSR denied]', () => {
   describe.each([
     ...csrCreationForbiddenCommonNames,
@@ -319,6 +306,23 @@ describe('[CSR denied]', () => {
     ...csrDeniedCommonNames,
   ])
     ('[when spec.username equal "$name"]', ({ name, cn }) => {
+      // Директория и файлы для каждого тестового набора данных
+      const fileName = path.basename(__filename, path.extname(__filename))
+      const testCaseName = name.replace(/\s+/g, '_')
+      const testCaseDir = path.join(outputDir, fileName, testCaseName)
+      const testFiles = {
+        privateKey: path.join(testCaseDir, 'client.key'),
+        publicKey: path.join(testCaseDir, 'client.pub'),
+        csr: path.join(testCaseDir, 'client.csr'),
+        ext: path.join(testCaseDir, 'v3.ext'),
+        crt: path.join(testCaseDir, 'client.crt'),
+      }
+
+      beforeAll(() => {
+        // Создаем отдельную директорию для каждого тестового набора данных
+        createDirectoryIfNotExists(testCaseDir)
+      })
+
       test('should prepare openssl files', async () => {
         // Преобразуем массив к формату для генерации CSR
         const formatCommonNames = cn.map((name) => `CN=${name}`)
