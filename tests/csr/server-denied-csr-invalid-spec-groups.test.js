@@ -210,7 +210,7 @@ describe('[CSR denied]', () => {
     ...csrCreationForbiddenGroups,
     ...csrDeniedGroups,
   ])
-    ('[when Subject Common Name in CSR equal "$name"]', ({ name, groups }) => {
+    ('[when spec.groups equal "$name"]', ({ name, groups }) => {
       test('should prepare openssl files', async () => {
         // Преобразуем массив к формату для генерации CSR
         const formatGroups = groups.map((group) => `O=${group}`)

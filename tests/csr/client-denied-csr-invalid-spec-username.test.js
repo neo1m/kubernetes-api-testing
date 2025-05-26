@@ -318,7 +318,7 @@ describe('[CSR denied]', () => {
     ...csrCreationUnauthorizedCommonNames,
     ...csrDeniedCommonNames,
   ])
-    ('[when Subject Common Name in CSR equal "$name"]', ({ name, cn }) => {
+    ('[when spec.username equal "$name"]', ({ name, cn }) => {
       test('should prepare openssl files', async () => {
         // Преобразуем массив к формату для генерации CSR
         const formatCommonNames = cn.map((name) => `CN=${name}`)

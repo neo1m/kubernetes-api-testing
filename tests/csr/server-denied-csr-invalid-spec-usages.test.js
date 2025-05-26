@@ -176,7 +176,7 @@ describe('[CSR denied]', () => {
     ...csrCreationForbiddenUsages,
     ...csrDeniedUsages,
   ])
-    ('[when Subject Common Name in CSR equal "$name"]', ({ name, usages }) => {
+    ('[when spec.usages equal "$name"]', ({ name, usages }) => {
       test('should prepare openssl files', async () => {
         // Subject
         const subject = [

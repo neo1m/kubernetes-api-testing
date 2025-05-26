@@ -259,7 +259,7 @@ describe('[CSR denied]', () => {
   describe.each([
     ...csrDeniedSubject,
   ])
-    ('[when Subject Alternative Names equal "$name"]', ({ name, subject }) => {
+    ('[when Subject in CSR equal "$name"]', ({ name, subject }) => {
       test('should prepare openssl files', async () => {
         // Subject
         const subjectList = subject
