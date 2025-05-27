@@ -308,7 +308,7 @@ describe('[CSR denied]', () => {
     ('[when spec.username equal "$name"]', ({ name, cn }) => {
       // Директория и файлы для каждого тестового набора данных
       const fileName = path.basename(__filename, path.extname(__filename))
-      const testCaseName = name.replace(/\s+/g, '_')
+      const testCaseName = name.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
       const testCaseDir = path.join(outputDir, fileName, testCaseName)
       const testFiles = {
         privateKey: path.join(testCaseDir, 'client.key'),
