@@ -4,24 +4,32 @@
 
 ### Subject
 
-* `O`: строго `system:nodes`
+* `O`: только
+
+  * `system:nodes`
+
 * `CN`: `system:node:<machineName>`
 
 ### Subject Alternative Name (SAN)
 
-* IP-адреса: соответствуют внутреннему и внешнему IP ноды
-* DNS-имена (если есть): содержат `<machineName>`
+* `IP`: только внутренний и внешний IP ноды, либо loopback IP либо все три вместе
+
+  * `IP:externalIP`
+  * `IP:internalIP`
+  * `IP:127.0.0.1`
 
 ### Поля `spec`
 
-* `groups`:
+* `groups`: как минимум одно значение из указанных (порядок не важен)
 
   * `system:nodes`
   * `system:authenticated`
-* `usages`:
+
+* `usages`: как минимум одно значение из указанных (порядок не важен)
 
   * `digital signature`
   * `server auth`
+
 * `username`: `system:node:<machineName>`
 
 
@@ -33,7 +41,7 @@
 
   * `system:bootstrappers`
   * `system:bootstrappers:kubeadm:default-node-token`
-  * `system:authenticated`
+
 * `CN`: `system:bootstrap:<machineName>`
 
 ### Subject Alternative Name (SAN)
@@ -42,13 +50,15 @@
 
 ### Поля `spec`
 
-* `groups`:
+* `groups`: как минимум одно значение из указанных (порядок не важен)
 
   * `system:bootstrappers`
   * `system:bootstrappers:kubeadm:default-node-token`
   * `system:authenticated`
-* `usages`:
+
+* `usages`: как минимум одно значение из указанных (порядок не важен)
 
   * `digital signature`
   * `client auth`
+
 * `username`: `system:bootstrap:<machineName>`
