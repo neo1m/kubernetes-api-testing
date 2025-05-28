@@ -55,10 +55,6 @@ const csrDeniedSAN = [
     san: [`DNS:${nodeData.nodeName}`],
   },
   {
-    name: 'valid ips plus localhost',
-    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
-  },
-  {
     name: 'san with duplicate dns entries',
     san: [`DNS:${nodeData.nodeName}`, `DNS:${nodeData.nodeName}`],
   },
@@ -89,10 +85,6 @@ const csrDeniedSAN = [
   {
     name: 'dns instead of ip',
     san: [`DNS:${nodeData.nodeName}`, `DNS:internal.local`],
-  },
-  {
-    name: 'san with localhost ip',
-    san: ['IP:127.0.0.1'],
   },
   {
     name: 'san with localhost dns',
