@@ -34,51 +34,179 @@ const nodeData = csrTests.nodeData
 
 // Валидные комбинации данных для одобрения CSR
 const csrCombinations = [
+  // 1. Комбинации CN only
   {
-    name: 'Subject: CN first, SAN with external and internal IPs, Usages: digital signature first',
-    subject: [
-      `CN=system:node:${nodeData.nodeName}`,
-      `O=system:nodes`,
-    ],
-    san: [
-      `IP:${nodeData.externalIP}`,
-      `IP:${nodeData.internalIP}`,
-    ],
-    usages: [
-      "digital signature",
-      "server auth",
-    ]
+    name: 'Subject: CN only, SAN: loopback only, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1'],
+    usages: ['digital signature']
   },
   {
-    name: 'Subject: O first, SAN with external and internal IPs, Usages: digital signature first',
-    subject: [
-      `O=system:nodes`,
-      `CN=system:node:${nodeData.nodeName}`,
-    ],
-    san: [
-      `IP:${nodeData.externalIP}`,
-      `IP:${nodeData.internalIP}`,
-    ],
-    usages: [
-      "digital signature",
-      "server auth",
-    ]
+    name: 'Subject: CN only, SAN: loopback only, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1'],
+    usages: ['server auth']
   },
   {
-    name: 'Subject: O first, SAN with external and internal IPs, Usages: server auth first',
-    subject: [
-      `O=system:nodes`,
-      `CN=system:node:${nodeData.nodeName}`,
-    ],
-    san: [
-      `IP:${nodeData.externalIP}`,
-      `IP:${nodeData.internalIP}`,
-    ],
-    usages: [
-      "server auth",
-      "digital signature",
-    ]
+    name: 'Subject: CN only, SAN: loopback only, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1'],
+    usages: ['digital signature', 'server auth']
   },
+  {
+    name: 'Subject: CN only, SAN: external+internal, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN only, SAN: external+internal, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN only, SAN: external+internal, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['digital signature', 'server auth']
+  },
+  {
+    name: 'Subject: CN only, SAN: all IPs, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN only, SAN: all IPs, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN only, SAN: all IPs, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['digital signature', 'server auth']
+  },
+
+  // 2. Комбинации CN+O
+  {
+    name: 'Subject: CN+O, SAN: loopback only, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: ['IP:127.0.0.1'],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN+O, SAN: loopback only, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: ['IP:127.0.0.1'],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: loopback only, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: ['IP:127.0.0.1'],
+    usages: ['digital signature', 'server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: external+internal, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN+O, SAN: external+internal, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: external+internal, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['digital signature', 'server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: all IPs, Usages: digital signature only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN+O, SAN: all IPs, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: all IPs, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['digital signature', 'server auth']
+  },
+
+  // 3. Комбинации с разным порядком элементов
+  {
+    name: 'Subject: O before CN, SAN: loopback only, Usages: digital signature only',
+    subject: ['O=system:nodes', `CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1'],
+    usages: ['digital signature']
+  },
+  {
+    name: 'Subject: CN only, SAN: reversed IP order, Usages: both',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1', `IP:${nodeData.internalIP}`, `IP:${nodeData.externalIP}`],
+    usages: ['digital signature', 'server auth']
+  },
+  {
+    name: 'Subject: CN+O, SAN: mixed IP order, Usages: server auth only',
+    subject: [`CN=system:node:${nodeData.nodeName}`, 'O=system:nodes'],
+    san: [`IP:${nodeData.internalIP}`, 'IP:127.0.0.1', `IP:${nodeData.externalIP}`],
+    usages: ['server auth']
+  },
+  {
+    name: 'Subject: CN only, SAN: external+internal, Usages: reversed',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['server auth', 'digital signature']
+  },
+  {
+    name: 'Subject: O first, SAN: all IPs mixed, Usages: reversed',
+    subject: ['O=system:nodes', `CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1', `IP:${nodeData.internalIP}`, `IP:${nodeData.externalIP}`],
+    usages: ['server auth', 'digital signature']
+  },
+  {
+    name: 'Subject: O first, CN last, SAN: external first, Usages: digital first',
+    subject: ['O=system:nodes', `CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['digital signature', 'server auth']
+  },
+  {
+    name: 'Subject: CN only, SAN: internal first, Usages: server first',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.internalIP}`, `IP:${nodeData.externalIP}`],
+    usages: ['server auth', 'digital signature']
+  },
+  {
+    name: 'Subject: O first, SAN: loopback last, Usages: mixed',
+    subject: ['O=system:nodes', `CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`, 'IP:127.0.0.1'],
+    usages: ['server auth', 'digital signature']
+  },
+  {
+    name: 'Subject: CN only, SAN: all possible IP orders, Usages: all usage orders',
+    subject: [`CN=system:node:${nodeData.nodeName}`],
+    san: [`IP:${nodeData.internalIP}`, 'IP:127.0.0.1', `IP:${nodeData.externalIP}`],
+    usages: ['server auth', 'digital signature']
+  },
+  {
+    name: 'Subject: all subject orders, SAN: all IP orders, Usages: all usage orders',
+    subject: ['O=system:nodes', `CN=system:node:${nodeData.nodeName}`],
+    san: ['IP:127.0.0.1', `IP:${nodeData.externalIP}`, `IP:${nodeData.internalIP}`],
+    usages: ['server auth', 'digital signature']
+  }
 ]
 
 beforeAll(() => {
