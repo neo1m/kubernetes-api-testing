@@ -33,42 +33,137 @@ const nodeData = csrTests.nodeData
 
 // Валидные комбинации данных для одобрения CSR
 const csrCombinations = [
+  // Комбинации CN с разным порядком элементов usages
   {
-    name: 'Subject: CN first, Usages: digital signature first',
-    subject: [
-      `CN=system:bootstrap:${nodeData.nodeName}`,
-      `O=system:bootstrappers`,
-      `O=system:bootstrappers:kubeadm:default-node-token`,
-    ],
-    usages: [
-      "digital signature",
-      "client auth",
-    ]
+    name: 'Subject: CN only, Usages: digital signature first',
+    subject: [`CN=system:bootstrap:${nodeData.nodeName}`],
+    usages: ["digital signature", "client auth"]
   },
   {
-    name: 'Subject: O first, Usages: client auth first',
-    subject: [
-      `O=system:bootstrappers`,
-      `CN=system:bootstrap:${nodeData.nodeName}`,
-      `O=system:bootstrappers:kubeadm:default-node-token`,
-    ],
-    usages: [
-      "client auth",
-      "digital signature",
-    ]
+    name: 'Subject: CN only, Usages: client auth first',
+    subject: [`CN=system:bootstrap:${nodeData.nodeName}`],
+    usages: ["client auth", "digital signature"]
   },
   {
-    name: 'Subject: O first with token group, Usages: client auth first',
-    subject: [
-      `O=system:bootstrappers:kubeadm:default-node-token`,
-      `O=system:bootstrappers`,
-      `CN=system:bootstrap:${nodeData.nodeName}`,
-    ],
-    usages: [
-      "client auth",
-      "digital signature",
-    ]
+    name: 'Subject: CN only, Usages: digital signature only',
+    subject: [`CN=system:bootstrap:${nodeData.nodeName}`],
+    usages: ["digital signature"]
   },
+  {
+    name: 'Subject: CN only, Usages: client auth only',
+    subject: [`CN=system:bootstrap:${nodeData.nodeName}`],
+    usages: ["client auth"]
+  },
+
+  // Комбинации CN + system:bootstrappers с разным порядком элементов
+  {
+    name: 'Subject: CN + bootstrappers (O first), Usages: normal order',
+    subject: [
+      'O=system:bootstrappers',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["digital signature", "client auth"]
+  },
+  {
+    name: 'Subject: CN + bootstrappers (CN first), Usages: reversed',
+    subject: [
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers'
+    ],
+    usages: ["client auth", "digital signature"]
+  },
+  {
+    name: 'Subject: CN + bootstrappers, Usages: digital only',
+    subject: [
+      'O=system:bootstrappers',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["digital signature"]
+  },
+
+  // Комбинации CN + kubeadm token с разным порядком элементов
+  {
+    name: 'Subject: CN + kubeadm (O first), Usages: normal',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["digital signature", "client auth"]
+  },
+  {
+    name: 'Subject: CN + kubeadm (CN first), Usages: reversed',
+    subject: [
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers:kubeadm:default-node-token'
+    ],
+    usages: ["client auth", "digital signature"]
+  },
+  {
+    name: 'Subject: CN + kubeadm, Usages: client only',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["client auth"]
+  },
+
+  // Комбинации CN + оба O с разным порядком элементов
+  {
+    name: 'Subject: CN + both O (bootstrappers first), Usages: normal',
+    subject: [
+      'O=system:bootstrappers',
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["digital signature", "client auth"]
+  },
+  {
+    name: 'Subject: CN + both O (kubeadm first), Usages: reversed',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      'O=system:bootstrappers',
+      `CN=system:bootstrap:${nodeData.nodeName}`
+    ],
+    usages: ["client auth", "digital signature"]
+  },
+  {
+    name: 'Subject: CN + both O (CN first), Usages: mixed',
+    subject: [
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      'O=system:bootstrappers'
+    ],
+    usages: ["client auth", "digital signature"]
+  },
+  {
+    name: 'Subject: CN + both O (mixed order), Usages: digital only',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers'
+    ],
+    usages: ["digital signature"]
+  },
+
+  // Комбинации смешанные с разным порядком элементов
+  {
+    name: 'Subject: All possible O orders, Usages: all combinations',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers'
+    ],
+    usages: ["client auth", "digital signature"]
+  },
+  {
+    name: 'Subject: CN in middle, Usages: single',
+    subject: [
+      'O=system:bootstrappers:kubeadm:default-node-token',
+      `CN=system:bootstrap:${nodeData.nodeName}`,
+      'O=system:bootstrappers'
+    ],
+    usages: ["client auth"]
+  }
 ]
 
 beforeAll(() => {
