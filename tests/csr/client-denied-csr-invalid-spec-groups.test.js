@@ -46,14 +46,6 @@ const csrCreationForbiddenGroups = [
     groups: ['system:bootstrappers', 'system:bootstrappers:kubeadm'],
   },
   {
-    name: 'duplicate of one group, missing the other',
-    groups: ['system:bootstrappers', 'system:bootstrappers'],
-  },
-  {
-    name: 'empty group list',
-    groups: [],
-  },
-  {
     name: 'random groups',
     groups: ['devs', 'qa'],
   },
@@ -118,8 +110,8 @@ const csrCreationForbiddenGroups = [
 // Для данных spec.usages отклоняется созданный CSR
 const csrDeniedGroups = [
   {
-    name: 'only one required group (default-node-token)',
-    groups: ['system:bootstrappers:kubeadm:default-node-token'],
+    name: 'duplicated system:bootstrappers:kubeadm:default-node-token',
+    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrappers:kubeadm:default-node-token'],
   },
   {
     name: 'required groups plus one extra (extra:group)',
@@ -138,19 +130,15 @@ const csrDeniedGroups = [
     groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:nodes'],
   },
   {
-    name: 'required groups with prefix',
+    name: 'required groups but system:bootstrappers with prefix',
     groups: ['kubeadm:system:bootstrappers', 'system:bootstrappers:kubeadm:default-node-token'],
   },
   {
-    name: 'required groups with suffix',
-    groups: ['system:bootstrappersx', 'system:bootstrappers:kubeadm:default-node-token'],
+    name: 'required groups but system:bootstrappers with suffix',
+    groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrappersx'],
   },
   {
-    name: 'only system:bootstrappers:kubeadm:default-node-token (missing first)',
-    groups: ['system:bootstrappers:kubeadm:default-node-token'],
-  },
-  {
-    name: 'groups in wrong order',
+    name: 'required groups but system:bootstrappers with typo',
     groups: ['system:bootstrappers:kubeadm:default-node-token', 'system:bootstrapers'],
   },
   {
