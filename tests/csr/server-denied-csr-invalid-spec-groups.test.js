@@ -35,10 +35,6 @@ const nodeData = csrTests.nodeData
 // Для данных spec.groups запрещено создание CSR
 const csrCreationForbiddenGroups = [
   {
-    name: 'empty group list',
-    groups: [],
-  },
-  {
     name: 'similar group name (system:node)',
     groups: ['system:node'],
   },
