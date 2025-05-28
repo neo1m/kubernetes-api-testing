@@ -70,8 +70,16 @@ const csrCreationForbiddenUsages = [
 // Для данных spec.usages отклоняется созданный CSR
 const csrDeniedUsages = [
   {
-    name: 'valid usages plus one extra',
+    name: 'valid usages plus one extra server auth',
     usages: ['digital signature', 'client auth', 'server auth'],
+  },
+  {
+    name: 'valid usages plus one extra client auth',
+    usages: ['digital signature', 'client auth', 'client auth'],
+  },
+  {
+    name: 'valid usages plus one extra digital signature',
+    usages: ['digital signature', 'client auth', 'digital signature'],
   },
   {
     name: 'valid usages plus two extras',
